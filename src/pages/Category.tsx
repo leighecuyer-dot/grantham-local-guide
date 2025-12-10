@@ -1,7 +1,9 @@
+import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
+import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, getCategoryIcon } from "@/types/business";
 import { getBusinessesByCategory } from "@/data/businesses";
@@ -9,6 +11,7 @@ import { getBusinessesByCategory } from "@/data/businesses";
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = getCategoryFromSlug(slug || "");
+  const [searchQuery, setSearchQuery] = useState("");
 
   if (!category) {
     return (
@@ -29,9 +32,24 @@ const Category = () => {
   }
 
   const allBusinesses = getBusinessesByCategory(category);
-  const featuredBusinesses = allBusinesses.filter((b) => b.featured);
-  const regularBusinesses = allBusinesses.filter((b) => !b.featured);
-  const sortedBusinesses = [...featuredBusinesses, ...regularBusinesses];
+
+  const filteredBusinesses = useMemo(() => {
+    const featuredFirst = [...allBusinesses].sort((a, b) => 
+      (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+    );
+    
+    if (!searchQuery.trim()) return featuredFirst;
+    
+    const query = searchQuery.toLowerCase();
+    return featuredFirst.filter(
+      (business) =>
+        business.name.toLowerCase().includes(query) ||
+        business.description.toLowerCase().includes(query) ||
+        business.address.toLowerCase().includes(query)
+    );
+  }, [allBusinesses, searchQuery]);
+
+  const featuredCount = allBusinesses.filter((b) => b.featured).length;
 
   return (
     <Layout>
@@ -50,32 +68,42 @@ const Category = () => {
               Best {category} in Grantham
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-lg text-muted-foreground max-w-2xl mb-8">
             Browse Grantham's top {category.toLowerCase()} below. 
-            {featuredBusinesses.length > 0 && " Featured businesses are shown first."}
+            {featuredCount > 0 && " Featured businesses are shown first."}
           </p>
+          <SearchBar
+            onSearch={setSearchQuery}
+            placeholder={`Search ${category.toLowerCase()}...`}
+            className="max-w-md"
+          />
         </div>
       </section>
 
       {/* Listings */}
       <section className="py-12 md:py-16">
         <div className="container">
-          {sortedBusinesses.length === 0 ? (
+          {filteredBusinesses.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg mb-6">
-                No businesses in this category yet. Be the first to list!
+                {searchQuery 
+                  ? `No businesses found matching "${searchQuery}"`
+                  : "No businesses in this category yet. Be the first to list!"}
               </p>
-              <Button asChild>
-                <Link to="/add-listing">Add Your Business</Link>
-              </Button>
+              {!searchQuery && (
+                <Button asChild>
+                  <Link to="/add-listing">Add Your Business</Link>
+                </Button>
+              )}
             </div>
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-6">
-                Showing {sortedBusinesses.length} {sortedBusinesses.length === 1 ? "business" : "businesses"}
+                Showing {filteredBusinesses.length} {filteredBusinesses.length === 1 ? "business" : "businesses"}
+                {searchQuery && ` for "${searchQuery}"`}
               </p>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {sortedBusinesses.map((business) => (
+                {filteredBusinesses.map((business) => (
                   <BusinessCard key={business.id} business={business} />
                 ))}
               </div>
