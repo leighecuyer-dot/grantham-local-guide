@@ -7,6 +7,47 @@ import { Badge } from "@/components/ui/badge";
 import { getBusinessBySlug, getRelatedBusinesses } from "@/data/businesses";
 import { getCategoryIcon, getCategorySlug } from "@/types/business";
 
+const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  
+  const RatingContent = () => (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className={`w-5 h-5 rounded-full ${
+              i < fullStars
+                ? "bg-[#00aa6c]"
+                : i === fullStars && hasHalfStar
+                ? "bg-gradient-to-r from-[#00aa6c] from-50% to-muted to-50%"
+                : "bg-muted"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="text-sm font-semibold text-foreground">{rating.toFixed(1)}</span>
+      <span className="text-sm text-muted-foreground">on Tripadvisor</span>
+    </div>
+  );
+  
+  if (url) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex hover:opacity-80 transition-opacity"
+      >
+        <RatingContent />
+      </a>
+    );
+  }
+  
+  return <RatingContent />;
+};
+
 const Business = () => {
   const { slug } = useParams<{ slug: string }>();
   const business = getBusinessBySlug(slug || "");
@@ -71,6 +112,12 @@ const Business = () => {
               <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
                 {business.name}
               </h1>
+
+              {business.tripadvisorRating && (
+                <div className="mb-4">
+                  <TripAdvisorRating rating={business.tripadvisorRating} url={business.tripadvisorUrl} />
+                </div>
+              )}
 
               <div className="flex items-center gap-2 text-muted-foreground mb-6">
                 <MapPin className="w-5 h-5 text-primary" />

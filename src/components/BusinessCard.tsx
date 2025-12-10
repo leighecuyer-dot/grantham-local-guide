@@ -7,6 +7,31 @@ interface BusinessCardProps {
   business: Business;
 }
 
+const TripAdvisorRating = ({ rating }: { rating: number }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="flex items-center">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className={`w-3.5 h-3.5 rounded-full ${
+              i < fullStars
+                ? "bg-[#00aa6c]"
+                : i === fullStars && hasHalfStar
+                ? "bg-gradient-to-r from-[#00aa6c] from-50% to-muted to-50%"
+                : "bg-muted"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="text-xs font-medium text-muted-foreground">{rating.toFixed(1)}</span>
+    </div>
+  );
+};
+
 const BusinessCard = ({ business }: BusinessCardProps) => {
   return (
     <Link
@@ -35,6 +60,11 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
         <h3 className="font-display text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
           {business.name}
         </h3>
+        {business.tripadvisorRating && (
+          <div className="mb-2">
+            <TripAdvisorRating rating={business.tripadvisorRating} />
+          </div>
+        )}
         <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
           {business.description}
         </p>

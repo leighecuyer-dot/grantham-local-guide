@@ -13,6 +13,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/greenbeanGrantham",
     image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80",
     featured: true,
+    tripadvisorRating: 4.5,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "2",
@@ -26,6 +28,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/classiccutsGrantham",
     image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=800&q=80",
     featured: true,
+    tripadvisorRating: 4.0,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "3",
@@ -38,6 +42,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/glowGrantham",
     image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80",
     featured: true,
+    tripadvisorRating: 5.0,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "4",
@@ -50,6 +56,8 @@ export const businesses: Business[] = [
     phone: "01476 456789",
     image: "https://images.unsplash.com/photo-1566140967404-b8b3932483f5?w=800&q=80",
     featured: false,
+    tripadvisorRating: 4.0,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "5",
@@ -63,6 +71,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/fitfactoryGrantham",
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
     featured: true,
+    tripadvisorRating: 4.5,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "6",
@@ -76,6 +86,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/italiankitchenGrantham",
     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
     featured: false,
+    tripadvisorRating: 4.5,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "7",
@@ -110,6 +122,8 @@ export const businesses: Business[] = [
     phone: "01476 890123",
     image: "https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=800&q=80",
     featured: true,
+    tripadvisorRating: 4.0,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "10",
@@ -122,6 +136,8 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/morningbrewGrantham",
     image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80",
     featured: false,
+    tripadvisorRating: 4.5,
+    tripadvisorUrl: "https://tripadvisor.com",
   },
   {
     id: "11",

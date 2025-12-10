@@ -21,6 +21,8 @@ export interface Business {
   instagram?: string;
   image: string;
   featured: boolean;
+  tripadvisorRating?: number;
+  tripadvisorUrl?: string;
 }
 
 export const CATEGORIES: Category[] = [
