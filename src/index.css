@@ -1,10 +1,3 @@
-@import '@fontsource/outfit/400.css';
-@import '@fontsource/outfit/500.css';
-@import '@fontsource/outfit/600.css';
-@import '@fontsource/outfit/700.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,42 +5,51 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 210 11% 15%;
+    --foreground: 220 20% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 11% 15%;
+    --card-foreground: 220 20% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 11% 15%;
+    --popover-foreground: 220 20% 10%;
 
-    --primary: 152 45% 28%;
+    --primary: 158 64% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 150 15% 96%;
-    --secondary-foreground: 152 45% 28%;
+    --secondary: 158 30% 96%;
+    --secondary-foreground: 158 64% 28%;
 
-    --muted: 150 10% 96%;
-    --muted-foreground: 210 8% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 152 45% 28%;
+    --accent: 158 64% 32%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 150 10% 90%;
-    --input: 150 10% 90%;
-    --ring: 152 45% 28%;
+    --border: 220 14% 92%;
+    --input: 220 14% 92%;
+    --ring: 158 64% 32%;
 
-    --radius: 0.75rem;
+    --radius: 0.875rem;
 
-    /* Custom tokens */
-    --green-light: 150 30% 95%;
-    --green-medium: 152 35% 85%;
-    --green-dark: 152 50% 22%;
-    --shadow-soft: 0 2px 8px -2px hsl(210 11% 15% / 0.08);
-    --shadow-card: 0 4px 20px -4px hsl(210 11% 15% / 0.1);
-    --shadow-hover: 0 8px 30px -6px hsl(152 45% 28% / 0.15);
+    /* Premium design tokens */
+    --green-50: 158 50% 97%;
+    --green-100: 158 45% 92%;
+    --green-500: 158 64% 32%;
+    --green-600: 158 70% 26%;
+    --green-700: 158 75% 20%;
+    
+    --charcoal: 220 20% 18%;
+    --slate: 220 14% 40%;
+    
+    --shadow-xs: 0 1px 2px 0 hsl(220 20% 10% / 0.03);
+    --shadow-sm: 0 1px 3px 0 hsl(220 20% 10% / 0.06), 0 1px 2px -1px hsl(220 20% 10% / 0.06);
+    --shadow-md: 0 4px 6px -1px hsl(220 20% 10% / 0.07), 0 2px 4px -2px hsl(220 20% 10% / 0.07);
+    --shadow-lg: 0 10px 15px -3px hsl(220 20% 10% / 0.08), 0 4px 6px -4px hsl(220 20% 10% / 0.08);
+    --shadow-xl: 0 20px 25px -5px hsl(220 20% 10% / 0.08), 0 8px 10px -6px hsl(220 20% 10% / 0.08);
+    --shadow-glow: 0 0 40px -10px hsl(158 64% 32% / 0.3);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -60,37 +62,39 @@
   }
 
   .dark {
-    --background: 210 11% 10%;
+    --background: 220 20% 7%;
     --foreground: 0 0% 98%;
 
-    --card: 210 11% 12%;
+    --card: 220 20% 10%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 210 11% 12%;
+    --popover: 220 20% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 152 45% 45%;
+    --primary: 158 55% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 11% 18%;
+    --secondary: 220 20% 14%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 210 11% 18%;
-    --muted-foreground: 210 8% 65%;
+    --muted: 220 20% 14%;
+    --muted-foreground: 220 10% 60%;
 
-    --accent: 152 45% 45%;
+    --accent: 158 55% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 11% 20%;
-    --input: 210 11% 20%;
-    --ring: 152 45% 45%;
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 158 55% 45%;
 
-    --green-light: 152 30% 15%;
-    --green-medium: 152 35% 25%;
-    --green-dark: 152 45% 55%;
+    --green-50: 158 40% 12%;
+    --green-100: 158 35% 18%;
+    --green-500: 158 55% 45%;
+    --green-600: 158 60% 38%;
+    --green-700: 158 65% 32%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -113,12 +117,30 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold tracking-tight;
+    @apply font-display font-bold tracking-tight text-foreground;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-green-600 bg-clip-text text-transparent;
+  }
+  
+  .glass {
+    @apply bg-background/80 backdrop-blur-lg;
+  }
+}
+
+@layer components {
+  .premium-card {
+    @apply bg-card rounded-2xl border border-border shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300;
+  }
+  
+  .section-padding {
+    @apply py-20 md:py-28;
   }
 }

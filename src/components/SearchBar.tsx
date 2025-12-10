@@ -39,19 +39,19 @@ const SearchBar = ({
 
   return (
     <form onSubmit={handleSubmit} className={`relative ${className}`}>
-      <div className="relative flex items-center gap-2">
+      <div className="relative flex items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
             value={query}
             onChange={handleChange}
             placeholder={placeholder}
-            className="pl-12 pr-4 h-12 text-base rounded-xl border-border/50 bg-background shadow-sm focus-visible:ring-primary"
+            className="pl-14 pr-5 h-14 text-base rounded-2xl border-border bg-card shadow-sm hover:shadow-md focus-visible:shadow-md focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/30 transition-all duration-200"
           />
         </div>
         {showButton && (
-          <Button type="submit" className="h-12 px-6 rounded-xl">
+          <Button type="submit" size="lg" className="h-14 px-8 rounded-2xl font-semibold shadow-md hover:shadow-lg transition-shadow">
             Search
           </Button>
         )}
