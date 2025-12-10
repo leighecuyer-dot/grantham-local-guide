@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import CategoryCard from "@/components/CategoryCard";
+import SearchBar from "@/components/SearchBar";
 import { CATEGORIES } from "@/types/business";
 import { getFeaturedBusinesses, getLatestBusinesses } from "@/data/businesses";
 
@@ -24,7 +25,13 @@ const Index = () => {
             <p className="text-lg md:text-xl text-muted-foreground mb-8 animate-fade-in" style={{ animationDelay: "0.1s" }}>
               Browse cafés, barbers, salons, shops, and local services — all in one place.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <div className="animate-fade-in max-w-xl mx-auto mb-8" style={{ animationDelay: "0.2s" }}>
+              <SearchBar 
+                placeholder="Search for businesses, services, or categories..." 
+                showButton
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
               <Button asChild size="lg" className="text-base">
                 <Link to="/categories">
                   <Search className="w-4 h-4 mr-2" />
