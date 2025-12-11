@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Heart, Users, MapPin, Sparkles } from "lucide-react";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
+import LogoBanner from "@/components/LogoBanner";
 import { useTown, TOWNS } from "@/contexts/TownContext";
 
 const About = () => {
@@ -9,6 +10,9 @@ const About = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero */}
       <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
         <div className="container text-center">

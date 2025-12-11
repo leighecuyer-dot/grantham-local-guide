@@ -4,6 +4,7 @@ import Layout from "@/components/Layout";
 import CategoryCard from "@/components/CategoryCard";
 import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
+import LogoBanner from "@/components/LogoBanner";
 import { CATEGORIES } from "@/types/business";
 import { businesses } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
@@ -30,6 +31,9 @@ const Categories = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background py-12 md:py-16">
         {/* Background image */}
