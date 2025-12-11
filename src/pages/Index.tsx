@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
+import AdBanner from "@/components/AdBanner";
 import { CATEGORIES, Category, getCategorySlug } from "@/types/business";
 import { getFeaturedBusinesses, getLatestBusinesses, getTrendingBusinesses } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
@@ -243,6 +244,14 @@ const Index = () => {
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Ad Banner */}
+      <section className="py-8">
+        <div className="container flex justify-center">
+          <AdBanner size="leaderboard" className="hidden md:flex" />
+          <AdBanner size="rectangle" className="md:hidden" />
         </div>
       </section>
 

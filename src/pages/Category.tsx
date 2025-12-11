@@ -4,6 +4,7 @@ import { ChevronLeft, Filter } from "lucide-react";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
+import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
 import { getBusinessesByCategory } from "@/data/businesses";
@@ -167,6 +168,12 @@ const Category = () => {
               </div>
             </>
           )}
+          
+          {/* Ad Banner */}
+          <div className="mt-12 flex justify-center">
+            <AdBanner size="leaderboard" className="hidden md:flex" />
+            <AdBanner size="rectangle" className="md:hidden" />
+          </div>
         </div>
       </section>
     </Layout>
