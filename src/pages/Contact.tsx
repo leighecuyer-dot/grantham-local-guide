@@ -49,12 +49,12 @@ const Contact = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
-        <div className="container">
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
+      <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
+        <div className="container text-center">
+          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 opacity-0 animate-fade-in-down">
             Contact Us
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
             Have a question, feedback, or need help with your listing? 
             We'd love to hear from you.
           </p>

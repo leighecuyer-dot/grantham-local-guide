@@ -29,18 +29,18 @@ const Index = () => {
     <Layout>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background">
-        <div className="container relative z-10 pt-16 pb-20 md:pt-24 md:pb-28">
+        <div className="container relative z-10 pt-20 pb-24 md:pt-28 md:pb-32">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 leading-[1.1] tracking-tight">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 leading-[1.1] tracking-tight opacity-0 animate-fade-in-down">
               Discover the Best of{" "}
               <span className="text-primary">{town.name}</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
               Cafés, bars, salons, shops, trades, gyms and local favourites — all in one place.
             </p>
             
             {/* Search Bar */}
-            <div className="max-w-xl mx-auto mb-12">
+            <div className="max-w-xl mx-auto mb-12 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
               <SearchBar 
                 placeholder="Search businesses, services, or categories..." 
                 showButton
@@ -48,12 +48,13 @@ const Index = () => {
             </div>
 
             {/* Category Quick Links */}
-            <div className="flex flex-wrap gap-2 justify-center">
-              {CATEGORIES.slice(0, 6).map((category) => (
+            <div className="flex flex-wrap gap-2 justify-center opacity-0 animate-fade-in" style={{ animationDelay: "0.35s" }}>
+              {CATEGORIES.slice(0, 6).map((category, index) => (
                 <Link
                   key={category}
                   to={`/${townSlug}/category/${getCategorySlug(category)}`}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border text-sm font-medium text-foreground hover:border-primary hover:bg-primary/5 transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border text-sm font-medium text-foreground hover:border-primary hover:bg-primary/5 hover:scale-105 transition-all duration-300"
+                  style={{ animationDelay: `${0.4 + index * 0.05}s` }}
                 >
                   <span className="text-primary">{categoryIcons[category]}</span>
                   {category}
@@ -61,7 +62,7 @@ const Index = () => {
               ))}
               <Link
                 to={`/${townSlug}/categories`}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 hover:scale-105 transition-all duration-300"
               >
                 View All
                 <ArrowRight className="w-4 h-4" />
@@ -71,48 +72,49 @@ const Index = () => {
         </div>
         
         {/* Subtle decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </section>
 
       {/* Featured Local Picks */}
-      <section className="py-16 md:py-20 border-b border-border">
+      <section className="py-16 md:py-24 border-b border-border">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
-                <Star className="w-4 h-4" />
-                Featured
-              </div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                Featured Local Picks
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                Hand-picked favourites from {town.name}
-              </p>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              <Star className="w-4 h-4" />
+              Featured
             </div>
-            <Button asChild variant="outline" size="sm">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+              Featured Local Picks
+            </h2>
+            <p className="text-muted-foreground">
+              Hand-picked favourites from {town.name}
+            </p>
+          </div>
+          
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredBusinesses.slice(0, 6).map((business, index) => (
+              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <BusinessCard business={business} />
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-10">
+            <Button asChild variant="outline" size="lg" className="hover:scale-105 transition-transform">
               <Link to={`/${townSlug}/categories`}>
                 View all businesses
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
           </div>
-          
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredBusinesses.slice(0, 6).map((business, index) => (
-              <div key={business.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
-                <BusinessCard business={business} />
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* Browse by Category */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-16 md:py-24 bg-muted/30">
         <div className="container">
-          <div className="text-center mb-10">
+          <div className="text-center mb-12">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
               Browse by Category
             </h2>
@@ -126,10 +128,10 @@ const Index = () => {
               <Link
                 key={category}
                 to={`/${townSlug}/category/${getCategorySlug(category)}`}
-                className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-md transition-all duration-200 animate-fade-in"
-                style={{ animationDelay: `${index * 0.03}s` }}
+                className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 opacity-0 animate-fade-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
                   {categoryIcons[category]}
                 </div>
                 <div className="flex-1">
@@ -140,7 +142,7 @@ const Index = () => {
                     Browse local {category.toLowerCase()}
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-300" />
               </Link>
             ))}
           </div>
@@ -148,26 +150,24 @@ const Index = () => {
       </section>
 
       {/* New This Month */}
-      <section className="py-16 md:py-20">
+      <section className="py-16 md:py-24">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-primary text-sm font-medium mb-3">
-                <Clock className="w-4 h-4" />
-                New
-              </div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                New This Month
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                Recently added to our directory
-              </p>
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-100 text-primary text-sm font-medium mb-4">
+              <Clock className="w-4 h-4" />
+              New
             </div>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+              New This Month
+            </h2>
+            <p className="text-muted-foreground">
+              Recently added to our directory
+            </p>
           </div>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {latestBusinesses.map((business, index) => (
-              <div key={business.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.05}s` }}>
+              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                 <BusinessCard business={business} />
               </div>
             ))}
