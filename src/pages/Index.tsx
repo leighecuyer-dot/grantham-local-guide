@@ -39,7 +39,7 @@ const Index = () => {
           <img 
             src={discoverLocalLogo} 
             alt="Discover Local Grantham" 
-            className="h-16 md:h-20 w-auto object-contain drop-shadow-lg"
+            className="h-16 md:h-20 w-auto object-contain drop-shadow-lg opacity-0 animate-fade-in"
           />
         </div>
       </section>
