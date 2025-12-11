@@ -31,17 +31,17 @@ const Categories = () => {
     <Layout>
       {/* Hero */}
       <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
-        <div className="container">
+        <div className="container text-center">
           <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Browse Categories
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mb-8">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Explore local businesses in {town.name} by category, or search for something specific.
           </p>
           <SearchBar
             onSearch={setSearchQuery}
             placeholder="Search all businesses..."
-            className="max-w-md"
+            className="max-w-md mx-auto"
           />
         </div>
       </section>
