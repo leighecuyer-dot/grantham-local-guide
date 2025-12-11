@@ -24,9 +24,9 @@ const Header = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-display text-lg font-bold text-foreground leading-tight">
-              Grantham Local
+              Discover Local
             </span>
-            <span className="text-xs text-muted-foreground hidden sm:block">Business Directory</span>
+            <span className="text-xs text-muted-foreground hidden sm:block">Grantham</span>
           </div>
         </Link>
 

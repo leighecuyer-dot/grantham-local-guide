@@ -87,7 +87,7 @@ const Footer = () => {
                 <span className="text-lg font-bold text-primary-foreground">G</span>
               </div>
               <span className="font-display text-xl font-semibold text-foreground">
-                Grantham Local
+                Discover Local
               </span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-sm">
@@ -151,7 +151,7 @@ const Footer = () => {
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Grantham Local. All rights reserved.
+            © {new Date().getFullYear()} Discover Local. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
             Made with ❤️ in Grantham, NG31

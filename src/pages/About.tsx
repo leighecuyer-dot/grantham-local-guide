@@ -10,7 +10,7 @@ const About = () => {
       <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
         <div className="container">
           <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            About Grantham Local
+            About Discover Local
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl">
             Connecting residents with the best local businesses in Grantham and 
@@ -29,8 +29,8 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-foreground/80">
                 <p>
-                  Grantham Local was created with a simple goal: to make it easy for 
-                  residents to discover and support the amazing local businesses in our town.
+                  Discover Local was created with a simple goal: to make it easy for 
+                  residents to discover and support the amazing local businesses in their town.
                 </p>
                 <p>
                   From independent cafés to skilled tradespeople, from beauty salons to 
