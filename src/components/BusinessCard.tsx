@@ -39,7 +39,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
   return (
     <Link
       to={`/${townSlug}/business/${business.slug}`}
-      className="group block bg-card rounded-xl overflow-hidden border border-border hover:border-primary/20 hover:shadow-lg transition-all duration-200"
+      className="group block bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         <img

@@ -82,7 +82,7 @@ const Business = () => {
         <img
           src={business.image}
           alt={business.name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover animate-scale-in"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
       </div>
@@ -99,7 +99,7 @@ const Business = () => {
 
           <div className="grid gap-10 lg:grid-cols-3">
             {/* Main Content */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 opacity-0 animate-slide-in-left">
               <div className="flex flex-wrap items-center gap-3 mb-5">
                 <Badge variant="secondary" className="text-sm px-4 py-1.5 rounded-full">
                   {getCategoryIcon(business.category)} {business.category}
@@ -148,7 +148,7 @@ const Business = () => {
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 opacity-0 animate-slide-in-right" style={{ animationDelay: "0.2s" }}>
               <div className="bg-card rounded-2xl border border-border p-7 shadow-sm sticky top-28">
                 <h3 className="font-display font-bold text-xl text-foreground mb-6">
                   Contact Details
@@ -220,14 +220,16 @@ const Business = () => {
 
       {/* Related Businesses */}
       {relatedBusinesses.length > 0 && (
-        <section className="py-16 md:py-20 bg-muted/40 border-t border-border">
-          <div className="container">
+        <section className="py-16 md:py-24 bg-muted/40 border-t border-border">
+          <div className="container text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-10">
               More {business.category} in {town.name}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {relatedBusinesses.map((related) => (
-                <BusinessCard key={related.id} business={related} />
+              {relatedBusinesses.map((related, index) => (
+                <div key={related.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <BusinessCard business={related} />
+                </div>
               ))}
             </div>
           </div>

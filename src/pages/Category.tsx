@@ -86,41 +86,40 @@ const Category = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-gradient-to-b from-secondary to-background py-12 md:py-16">
-        <div className="container">
-          <Button asChild variant="ghost" size="sm" className="mb-6 -ml-3">
+      <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
+        <div className="container text-center">
+          <Button asChild variant="ghost" size="sm" className="mb-6">
             <Link to={`/${townSlug}/categories`}>
               <ChevronLeft className="w-4 h-4 mr-1" />
               All Categories
             </Link>
           </Button>
           
-          <div className="flex items-start gap-4 mb-4">
-            <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 text-primary">
+          <div className="flex items-center justify-center gap-4 mb-4 opacity-0 animate-fade-in-down">
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary">
               {categoryIcons[category]}
             </div>
-            <div>
-              <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-                Best {category} in {town.name}
-              </h1>
-              <p className="text-muted-foreground mt-2 max-w-xl">
-                {categoryDescriptions[category]}. Browse {allBusinesses.length} local {allBusinesses.length === 1 ? 'business' : 'businesses'} below.
-              </p>
-            </div>
           </div>
+          
+          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            Best {category} in {town.name}
+          </h1>
+          <p className="text-muted-foreground max-w-xl mx-auto mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            {categoryDescriptions[category]}. Browse {allBusinesses.length} local {allBusinesses.length === 1 ? 'business' : 'businesses'} below.
+          </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 mt-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
             <SearchBar
               onSearch={setSearchQuery}
               placeholder={`Search ${category.toLowerCase()}...`}
-              className="flex-1 max-w-md"
+              className="flex-1"
             />
             {featuredCount > 0 && (
               <Button
                 variant={showFeaturedOnly ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
-                className="w-fit"
+                className="w-fit mx-auto sm:mx-0 hover:scale-105 transition-transform"
               >
                 <Filter className="w-4 h-4 mr-2" />
                 Featured Only
@@ -131,7 +130,7 @@ const Category = () => {
       </section>
 
       {/* Listings */}
-      <section className="py-12 md:py-16">
+      <section className="py-14 md:py-20">
         <div className="container">
           {filteredBusinesses.length === 0 ? (
             <div className="text-center py-12">
@@ -143,21 +142,23 @@ const Category = () => {
                   : "No businesses in this category yet. Be the first to list!"}
               </p>
               {!searchQuery && !showFeaturedOnly && (
-                <Button asChild>
+                <Button asChild className="hover:scale-105 transition-transform">
                   <Link to={`/${townSlug}/add-listing`}>Add Your Business</Link>
                 </Button>
               )}
             </div>
           ) : (
             <>
-              <p className="text-sm text-muted-foreground mb-6">
+              <p className="text-sm text-muted-foreground mb-8 text-center">
                 Showing {filteredBusinesses.length} {filteredBusinesses.length === 1 ? "business" : "businesses"}
                 {searchQuery && ` for "${searchQuery}"`}
                 {showFeaturedOnly && " (featured only)"}
               </p>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredBusinesses.map((business) => (
-                  <BusinessCard key={business.id} business={business} />
+                {filteredBusinesses.map((business, index) => (
+                  <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s` }}>
+                    <BusinessCard business={business} />
+                  </div>
                 ))}
               </div>
             </>
