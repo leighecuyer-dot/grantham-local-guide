@@ -31,14 +31,14 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="container flex h-18 items-center justify-between py-3">
-        <Link to={`/${townSlug}`} className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-green-600 shadow-md">
-            <span className="text-lg font-bold text-primary-foreground">D</span>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
+      <div className="container flex h-16 items-center justify-between">
+        <Link to={`/${townSlug}`} className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+            <span className="text-base font-bold text-primary-foreground">D</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-display text-lg font-bold text-foreground leading-tight">
+            <span className="font-display text-base font-bold text-foreground leading-tight">
               Discover Local
             </span>
             <DropdownMenu>
@@ -69,16 +69,16 @@ const Header = () => {
               key={link.href}
               to={link.href}
               className={cn(
-                "px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                "px-3.5 py-2 text-sm font-medium rounded-lg transition-colors",
                 isActive(link.href)
-                  ? "text-primary bg-green-50"
+                  ? "text-primary bg-primary/5"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
               {link.label}
             </Link>
           ))}
-          <Button asChild className="ml-2 rounded-xl" size="sm">
+          <Button asChild className="ml-3 rounded-lg h-9" size="sm">
             <Link to={`/${townSlug}/add-listing`}>
               <Plus className="w-4 h-4 mr-1.5" />
               Add Listing
@@ -90,7 +90,7 @@ const Header = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden rounded-xl"
+          className="md:hidden"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
@@ -100,17 +100,17 @@ const Header = () => {
 
       {/* Mobile Nav */}
       {isOpen && (
-        <nav className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl">
-          <div className="container py-4 flex flex-col gap-1">
+        <nav className="md:hidden border-t border-border bg-background">
+          <div className="container py-3 flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "px-4 py-3.5 text-sm font-medium rounded-xl transition-colors",
+                  "px-4 py-3 text-sm font-medium rounded-lg transition-colors",
                   isActive(link.href)
-                    ? "text-primary bg-green-50"
+                    ? "text-primary bg-primary/5"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
@@ -120,7 +120,7 @@ const Header = () => {
             <Link
               to={`/${townSlug}/add-listing`}
               onClick={() => setIsOpen(false)}
-              className="mt-2 px-4 py-3.5 text-sm font-medium rounded-xl bg-primary text-primary-foreground text-center"
+              className="mt-2 px-4 py-3 text-sm font-medium rounded-lg bg-primary text-primary-foreground text-center"
             >
               Add Your Business
             </Link>
