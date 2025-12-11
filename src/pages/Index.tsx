@@ -34,12 +34,12 @@ const Index = () => {
   return (
     <Layout>
       {/* Logo Banner */}
-      <section className="w-full py-12 md:py-16 lg:py-20 bg-gradient-to-r from-primary/10 via-card to-primary/10 border-b border-primary/20">
+      <section className="w-full py-16 md:py-20 lg:py-24 bg-gradient-to-r from-primary/10 via-card to-primary/10 border-b border-primary/20">
         <div className="w-full flex justify-center px-4">
           <img 
             src={discoverLocalLogo} 
             alt="Discover Local Grantham" 
-            className="h-36 md:h-48 lg:h-60 xl:h-72 max-w-full object-contain drop-shadow-2xl opacity-0 animate-fade-in"
+            className="h-48 md:h-64 lg:h-80 xl:h-96 max-w-full object-contain drop-shadow-2xl opacity-0 animate-fade-in"
           />
         </div>
       </section>
