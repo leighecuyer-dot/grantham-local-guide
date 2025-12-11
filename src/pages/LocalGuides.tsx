@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, Trophy, Gem, Heart, Sparkles, Coffee, Scissors } from "lucide-react";
 import Layout from "@/components/Layout";
+import LogoBanner from "@/components/LogoBanner";
 import BusinessCard from "@/components/BusinessCard";
 import { useTown } from "@/contexts/TownContext";
 import { businesses, getFeaturedBusinesses, getBusinessesByTag } from "@/data/businesses";
@@ -60,6 +61,9 @@ const LocalGuides = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero */}
       <section className="bg-gradient-to-b from-secondary via-background to-background py-16 md:py-24">
         <div className="container text-center">
