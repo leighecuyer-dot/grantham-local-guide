@@ -7,7 +7,8 @@ export type Category =
   | "Trades"
   | "Kids Activities"
   | "Services"
-  | "Gyms & Fitness";
+  | "Gyms & Fitness"
+  | "Sport Clubs";
 
 export type BusinessTag = "Independent" | "Family-run" | "Local favourite" | "Hidden gem" | "Award-winning" | "Eco-friendly";
 
@@ -49,6 +50,7 @@ export const CATEGORIES: Category[] = [
   "Kids Activities",
   "Services",
   "Gyms & Fitness",
+  "Sport Clubs",
 ];
 
 export const getCategorySlug = (category: Category): string => {
@@ -70,6 +72,7 @@ export const getCategoryIcon = (category: Category): string => {
     "Kids Activities": "🎨",
     "Services": "📋",
     "Gyms & Fitness": "💪",
+    "Sport Clubs": "⚽",
   };
   return icons[category];
 };

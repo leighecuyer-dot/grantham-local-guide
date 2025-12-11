@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
 import { getBusinessesByCategory } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
-import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell } from "lucide-react";
+import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy } from "lucide-react";
 
 const categoryIcons: Record<CategoryType, React.ReactNode> = {
   "Café": <Coffee className="w-6 h-6" />,
@@ -20,6 +20,7 @@ const categoryIcons: Record<CategoryType, React.ReactNode> = {
   "Kids Activities": <Baby className="w-6 h-6" />,
   "Services": <Briefcase className="w-6 h-6" />,
   "Gyms & Fitness": <Dumbbell className="w-6 h-6" />,
+  "Sport Clubs": <Trophy className="w-6 h-6" />,
 };
 
 const categoryDescriptions: Record<CategoryType, string> = {
@@ -32,6 +33,7 @@ const categoryDescriptions: Record<CategoryType, string> = {
   "Kids Activities": "Fun activities and venues for children",
   "Services": "Professional services for home and business",
   "Gyms & Fitness": "Gyms, fitness studios, and wellness centres",
+  "Sport Clubs": "Local sports clubs, teams, and athletic organisations",
 };
 
 const Category = () => {
