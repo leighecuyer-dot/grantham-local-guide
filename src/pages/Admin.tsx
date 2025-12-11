@@ -14,6 +14,12 @@ import { useAuth, useIsAdmin } from "@/hooks/useAuth";
 import { useBusinesses, useCreateBusiness, useUpdateBusiness, useDeleteBusiness, CreateBusinessInput } from "@/hooks/useBusinesses";
 import { CATEGORIES, BUSINESS_TAGS, Category, BusinessTag } from "@/types/business";
 import { TOWNS } from "@/contexts/TownContext";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().trim().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
 
 const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const { signIn, signUp } = useAuth();
@@ -21,16 +27,30 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+    
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      const fieldErrors: { email?: string; password?: string } = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0] === "email") fieldErrors.email = err.message;
+        if (err.path[0] === "password") fieldErrors.password = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    
     setLoading(true);
     try {
       if (isSignUp) {
-        await signUp(email, password);
+        await signUp(result.data.email, result.data.password);
         toast.success("Account created! Please contact admin for access.");
       } else {
-        await signIn(email, password);
+        await signIn(result.data.email, result.data.password);
         onLogin();
       }
     } catch (error: any) {
@@ -51,8 +71,9 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
+              className={errors.email ? "border-destructive" : ""}
             />
+            {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
@@ -61,9 +82,9 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
+              className={errors.password ? "border-destructive" : ""}
             />
+            {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
@@ -73,7 +94,7 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
           {isSignUp ? "Already have an account?" : "Need an account?"}{" "}
           <button
             type="button"
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => { setIsSignUp(!isSignUp); setErrors({}); }}
             className="text-primary hover:underline"
           >
             {isSignUp ? "Sign In" : "Sign Up"}
