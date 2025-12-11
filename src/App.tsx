@@ -15,21 +15,6 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Wrapper component to provide town context
-const TownRoutes = () => (
-  <TownProvider>
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/categories" element={<Categories />} />
-      <Route path="/category/:slug" element={<Category />} />
-      <Route path="/business/:slug" element={<Business />} />
-      <Route path="/add-listing" element={<AddListing />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/about" element={<About />} />
-    </Routes>
-  </TownProvider>
-);
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -41,7 +26,19 @@ const App = () => (
           <Route path="/" element={<Navigate to="/grantham" replace />} />
           
           {/* Town-based routes */}
-          <Route path="/:town/*" element={<TownRoutes />} />
+          <Route path="/:town/*" element={
+            <TownProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/category/:slug" element={<Category />} />
+                <Route path="/business/:slug" element={<Business />} />
+                <Route path="/add-listing" element={<AddListing />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<About />} />
+              </Routes>
+            </TownProvider>
+          } />
           
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
