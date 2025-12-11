@@ -31,6 +31,7 @@ export interface Business {
   website?: string;
   phone?: string;
   instagram?: string;
+  email?: string;
   image: string;
   featured: boolean;
   tripadvisorRating?: number;

@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      businesses: {
+        Row: {
+          address: string
+          category: Database["public"]["Enums"]["business_category"]
+          created_at: string
+          description: string
+          email: string | null
+          featured: boolean
+          id: string
+          image: string
+          instagram: string | null
+          name: string
+          phone: string | null
+          slug: string
+          tags: Database["public"]["Enums"]["business_tag"][] | null
+          town: string
+          tripadvisor_rating: number | null
+          tripadvisor_url: string | null
+          updated_at: string
+          views: number
+          website: string | null
+        }
+        Insert: {
+          address: string
+          category: Database["public"]["Enums"]["business_category"]
+          created_at?: string
+          description: string
+          email?: string | null
+          featured?: boolean
+          id?: string
+          image: string
+          instagram?: string | null
+          name: string
+          phone?: string | null
+          slug: string
+          tags?: Database["public"]["Enums"]["business_tag"][] | null
+          town?: string
+          tripadvisor_rating?: number | null
+          tripadvisor_url?: string | null
+          updated_at?: string
+          views?: number
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          category?: Database["public"]["Enums"]["business_category"]
+          created_at?: string
+          description?: string
+          email?: string | null
+          featured?: boolean
+          id?: string
+          image?: string
+          instagram?: string | null
+          name?: string
+          phone?: string | null
+          slug?: string
+          tags?: Database["public"]["Enums"]["business_tag"][] | null
+          town?: string
+          tripadvisor_rating?: number | null
+          tripadvisor_url?: string | null
+          updated_at?: string
+          views?: number
+          website?: string | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -35,15 +101,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
+      business_category:
+        | "Café"
+        | "Restaurant"
+        | "Barbers"
+        | "Beauty"
+        | "Retail"
+        | "Trades"
+        | "Kids Activities"
+        | "Services"
+        | "Gyms & Fitness"
+        | "Sport Clubs"
+      business_tag:
+        | "Independent"
+        | "Family-run"
+        | "Local favourite"
+        | "Hidden gem"
+        | "Award-winning"
+        | "Eco-friendly"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -170,6 +278,28 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+      business_category: [
+        "Café",
+        "Restaurant",
+        "Barbers",
+        "Beauty",
+        "Retail",
+        "Trades",
+        "Kids Activities",
+        "Services",
+        "Gyms & Fitness",
+        "Sport Clubs",
+      ],
+      business_tag: [
+        "Independent",
+        "Family-run",
+        "Local favourite",
+        "Hidden gem",
+        "Award-winning",
+        "Eco-friendly",
+      ],
+    },
   },
 } as const
