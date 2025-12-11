@@ -2,17 +2,19 @@ import { Link } from "react-router-dom";
 import { Category, getCategorySlug, getCategoryIcon } from "@/types/business";
 import { businesses } from "@/data/businesses";
 import { ArrowUpRight } from "lucide-react";
+import { useTown } from "@/contexts/TownContext";
 
 interface CategoryCardProps {
   category: Category;
 }
 
 const CategoryCard = ({ category }: CategoryCardProps) => {
+  const { townSlug } = useTown();
   const count = businesses.filter((b) => b.category === category).length;
 
   return (
     <Link
-      to={`/category/${getCategorySlug(category)}`}
+      to={`/${townSlug}/category/${getCategorySlug(category)}`}
       className="group relative flex items-center gap-5 p-5 bg-card rounded-2xl border border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300"
     >
       <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-green-50 text-2xl group-hover:bg-primary/10 group-hover:scale-110 transition-all duration-300">

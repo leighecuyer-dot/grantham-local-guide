@@ -6,11 +6,13 @@ import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
 import { CATEGORIES } from "@/types/business";
 import { businesses } from "@/data/businesses";
+import { useTown } from "@/contexts/TownContext";
 
 const Categories = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const { town } = useTown();
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return null;
@@ -34,7 +36,7 @@ const Categories = () => {
             Browse Categories
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mb-8">
-            Explore local businesses in Grantham by category, or search for something specific.
+            Explore local businesses in {town.name} by category, or search for something specific.
           </p>
           <SearchBar
             onSearch={setSearchQuery}
