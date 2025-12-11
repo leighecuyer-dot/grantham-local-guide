@@ -34,12 +34,12 @@ const Index = () => {
   return (
     <Layout>
       {/* Logo Banner */}
-      <section className="py-6 bg-gradient-to-r from-background via-card to-background border-b border-border">
+      <section className="py-10 md:py-14 bg-gradient-to-r from-primary/10 via-card to-primary/10 border-b border-primary/20">
         <div className="container flex justify-center">
           <img 
             src={discoverLocalLogo} 
             alt="Discover Local Grantham" 
-            className="h-16 md:h-20 w-auto object-contain drop-shadow-lg opacity-0 animate-fade-in"
+            className="h-24 md:h-32 lg:h-40 w-auto object-contain drop-shadow-2xl opacity-0 animate-fade-in"
           />
         </div>
       </section>
