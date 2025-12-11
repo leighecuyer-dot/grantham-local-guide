@@ -37,7 +37,7 @@ const Index = () => {
       <section className="w-full py-16 md:py-20 lg:py-24 bg-gradient-to-r from-primary/10 via-card to-primary/10 border-b border-primary/20">
         <div className="w-full flex flex-col items-center px-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full scale-110" />
+            <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full scale-110 animate-pulse" />
             <img 
               src={discoverLocalLogo} 
               alt="Discover Local Grantham" 
