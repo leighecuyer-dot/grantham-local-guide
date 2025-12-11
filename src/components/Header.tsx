@@ -20,7 +20,7 @@ const Header = () => {
     { href: `/${townSlug}`, label: "Home" },
     { href: `/${townSlug}/categories`, label: "Browse" },
     { href: `/${townSlug}/local-guides`, label: "Local Guides" },
-    { href: `/${townSlug}/about`, label: "About" },
+    { href: `/${townSlug}/advertise`, label: "For Businesses" },
     { href: `/${townSlug}/contact`, label: "Contact" },
   ];
 

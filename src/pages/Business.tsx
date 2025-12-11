@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { ChevronLeft, MapPin, Globe, Phone, Instagram, ExternalLink, Star } from "lucide-react";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
+import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getBusinessBySlug, getRelatedBusinesses } from "@/data/businesses";
@@ -224,6 +225,14 @@ const Business = () => {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Ad Banner */}
+      <section className="py-8 bg-background">
+        <div className="container flex justify-center">
+          <AdBanner size="leaderboard" className="hidden md:flex" />
+          <AdBanner size="rectangle" className="md:hidden" />
         </div>
       </section>
 

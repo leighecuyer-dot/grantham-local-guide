@@ -117,6 +117,16 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to={`/${townSlug}/advertise`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  For Businesses
+                </Link>
+              </li>
+              <li>
+                <Link to={`/${townSlug}/ai-tools`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  AI Tools
+                </Link>
+              </li>
+              <li>
                 <Link to={`/${townSlug}/about`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   About Us
                 </Link>

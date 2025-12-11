@@ -13,6 +13,8 @@ import AddListing from "./pages/AddListing";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import LocalGuides from "./pages/LocalGuides";
+import Advertise from "./pages/Advertise";
+import AITools from "./pages/AITools";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +44,8 @@ const AnimatedRoutes = () => {
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
               <Route path="/local-guides" element={<LocalGuides />} />
+              <Route path="/advertise" element={<Advertise />} />
+              <Route path="/ai-tools" element={<AITools />} />
             </Routes>
           </TownProvider>
         } />
