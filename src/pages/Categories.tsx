@@ -7,6 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import { CATEGORIES } from "@/types/business";
 import { businesses } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
+import granthamSkyline from "@/assets/grantham-skyline.jpg";
 
 const Categories = () => {
   const [searchParams] = useSearchParams();
@@ -30,8 +31,16 @@ const Categories = () => {
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
-        <div className="container text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background py-12 md:py-16">
+        {/* Background image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-10"
+          style={{ backgroundImage: `url(${granthamSkyline})` }}
+        />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        
+        <div className="container relative z-10 text-center">
           <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Browse Categories
           </h1>
