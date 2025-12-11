@@ -110,6 +110,15 @@ const Business = () => {
                     Featured
                   </Badge>
                 )}
+                {business.tags && business.tags.map((tag) => (
+                  <Badge 
+                    key={tag} 
+                    variant="outline" 
+                    className="text-sm px-3 py-1 rounded-full border-border/50"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
               </div>
 
               <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight">

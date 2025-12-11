@@ -9,6 +9,17 @@ export type Category =
   | "Services"
   | "Gyms & Fitness";
 
+export type BusinessTag = "Independent" | "Family-run" | "Local favourite" | "Hidden gem" | "Award-winning" | "Eco-friendly";
+
+export const BUSINESS_TAGS: BusinessTag[] = [
+  "Independent",
+  "Family-run",
+  "Local favourite",
+  "Hidden gem",
+  "Award-winning",
+  "Eco-friendly",
+];
+
 export interface Business {
   id: string;
   slug: string;
@@ -23,6 +34,9 @@ export interface Business {
   featured: boolean;
   tripadvisorRating?: number;
   tripadvisorUrl?: string;
+  tags?: BusinessTag[];
+  views?: number;
+  createdAt?: string;
 }
 
 export const CATEGORIES: Category[] = [

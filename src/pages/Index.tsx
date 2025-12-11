@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell } from "lucide-react";
+import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
 import { CATEGORIES, Category, getCategorySlug } from "@/types/business";
-import { getFeaturedBusinesses, getLatestBusinesses } from "@/data/businesses";
+import { getFeaturedBusinesses, getLatestBusinesses, getTrendingBusinesses } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
 
 const categoryIcons: Record<Category, React.ReactNode> = {
@@ -23,6 +23,7 @@ const categoryIcons: Record<Category, React.ReactNode> = {
 const Index = () => {
   const featuredBusinesses = getFeaturedBusinesses();
   const latestBusinesses = getLatestBusinesses(6);
+  const trendingBusinesses = getTrendingBusinesses(6);
   const { town, townSlug } = useTown();
 
   return (
@@ -120,8 +121,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Browse by Category */}
+      {/* Trending This Week */}
       <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-400 text-sm font-medium mb-4">
+              <TrendingUp className="w-4 h-4" />
+              Trending
+            </div>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">
+              Trending This Week
+            </h2>
+            <p className="text-muted-foreground">
+              Most viewed businesses in {town.name} right now
+            </p>
+          </div>
+          
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {trendingBusinesses.slice(0, 6).map((business, index) => (
+              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                <BusinessCard business={business} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      {/* Browse by Category */}
+      <section className="py-16 md:py-24">
         <div className="container">
           <div className="text-center mb-12">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-3">

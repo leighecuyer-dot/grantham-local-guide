@@ -15,6 +15,9 @@ export const businesses: Business[] = [
     featured: true,
     tripadvisorRating: 4.5,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Independent", "Local favourite", "Eco-friendly"],
+    views: 342,
+    createdAt: "2024-11-15",
   },
   {
     id: "2",
@@ -30,6 +33,9 @@ export const businesses: Business[] = [
     featured: true,
     tripadvisorRating: 4.0,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Family-run", "Local favourite"],
+    views: 287,
+    createdAt: "2024-10-20",
   },
   {
     id: "3",
@@ -44,6 +50,9 @@ export const businesses: Business[] = [
     featured: true,
     tripadvisorRating: 5.0,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Independent", "Award-winning"],
+    views: 456,
+    createdAt: "2024-09-10",
   },
   {
     id: "4",
@@ -58,6 +67,9 @@ export const businesses: Business[] = [
     featured: false,
     tripadvisorRating: 4.0,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Family-run"],
+    views: 198,
+    createdAt: "2024-12-01",
   },
   {
     id: "5",
@@ -73,6 +85,9 @@ export const businesses: Business[] = [
     featured: true,
     tripadvisorRating: 4.5,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Independent", "Local favourite"],
+    views: 523,
+    createdAt: "2024-08-15",
   },
   {
     id: "6",
@@ -88,6 +103,9 @@ export const businesses: Business[] = [
     featured: false,
     tripadvisorRating: 4.5,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Family-run", "Hidden gem"],
+    views: 312,
+    createdAt: "2024-10-05",
   },
   {
     id: "7",
@@ -99,6 +117,9 @@ export const businesses: Business[] = [
     phone: "01476 789012",
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=80",
     featured: false,
+    tags: ["Independent", "Local favourite"],
+    views: 178,
+    createdAt: "2024-11-01",
   },
   {
     id: "8",
@@ -110,6 +131,9 @@ export const businesses: Business[] = [
     instagram: "https://instagram.com/vintageGrantham",
     image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80",
     featured: false,
+    tags: ["Independent", "Hidden gem", "Eco-friendly"],
+    views: 245,
+    createdAt: "2024-12-05",
   },
   {
     id: "9",
@@ -124,6 +148,9 @@ export const businesses: Business[] = [
     featured: true,
     tripadvisorRating: 4.0,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Independent", "Award-winning"],
+    views: 389,
+    createdAt: "2024-09-20",
   },
   {
     id: "10",
@@ -138,6 +165,9 @@ export const businesses: Business[] = [
     featured: false,
     tripadvisorRating: 4.5,
     tripadvisorUrl: "https://tripadvisor.com",
+    tags: ["Independent", "Hidden gem", "Eco-friendly"],
+    views: 267,
+    createdAt: "2024-11-25",
   },
   {
     id: "11",
@@ -149,6 +179,9 @@ export const businesses: Business[] = [
     phone: "01476 012345",
     image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80",
     featured: false,
+    tags: ["Independent"],
+    views: 134,
+    createdAt: "2024-10-15",
   },
   {
     id: "12",
@@ -160,6 +193,9 @@ export const businesses: Business[] = [
     phone: "01476 123457",
     image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=800&q=80",
     featured: false,
+    tags: ["Family-run", "Local favourite"],
+    views: 156,
+    createdAt: "2024-09-05",
   },
 ];
 
@@ -168,7 +204,19 @@ export const getFeaturedBusinesses = (): Business[] => {
 };
 
 export const getLatestBusinesses = (limit: number = 6): Business[] => {
-  return [...businesses].reverse().slice(0, limit);
+  return [...businesses]
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
+    .slice(0, limit);
+};
+
+export const getTrendingBusinesses = (limit: number = 6): Business[] => {
+  return [...businesses]
+    .sort((a, b) => (b.views || 0) - (a.views || 0))
+    .slice(0, limit);
 };
 
 export const getBusinessesByCategory = (category: string): Business[] => {
@@ -183,4 +231,9 @@ export const getRelatedBusinesses = (business: Business, limit: number = 3): Bus
   return businesses
     .filter((b) => b.category === business.category && b.id !== business.id)
     .slice(0, limit);
+};
+
+export const getBusinessesByTag = (tag: string, limit?: number): Business[] => {
+  const filtered = businesses.filter((b) => b.tags?.includes(tag as any));
+  return limit ? filtered.slice(0, limit) : filtered;
 };
