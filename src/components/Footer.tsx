@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -11,16 +12,38 @@ const Footer = () => {
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    if (!trimmedEmail) {
       toast.error("Please enter your email address");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
       return;
     }
     
     setIsLoading(true);
-    // Simulate subscription - replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast.success("Thanks for subscribing! We'll keep you updated.");
-    setEmail("");
+    
+    const { error } = await supabase
+      .from('newsletter_subscribers')
+      .insert({ email: trimmedEmail });
+
+    if (error) {
+      if (error.code === '23505') {
+        toast.info("You're already subscribed!");
+      } else {
+        console.error("Newsletter subscription error:", error);
+        toast.error("Something went wrong. Please try again.");
+      }
+    } else {
+      toast.success("Thanks for subscribing! We'll keep you updated.");
+      setEmail("");
+    }
+    
     setIsLoading(false);
   };
 
