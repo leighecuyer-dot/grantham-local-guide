@@ -13,6 +13,7 @@ import AddListing from "./pages/AddListing";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import LocalGuides from "./pages/LocalGuides";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,9 @@ const AnimatedRoutes = () => {
       <Routes location={location} key={location.pathname}>
         {/* Redirect root to default town */}
         <Route path="/" element={<Navigate to="/grantham" replace />} />
+        
+        {/* Admin route (outside town context) */}
+        <Route path="/admin" element={<Admin />} />
         
         {/* Town-based routes */}
         <Route path="/:town/*" element={
