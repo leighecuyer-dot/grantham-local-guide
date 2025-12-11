@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen } from "lucide-react";
+import granthamSkyline from "@/assets/grantham-skyline.jpg";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
@@ -29,18 +30,20 @@ const Index = () => {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background">
-        {/* Gradient glow backdrop */}
+      <section className="relative overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${granthamSkyline})` }}
+        />
+        {/* Dark overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/90 to-background" />
+        {/* Gradient glow effects on top */}
         <div className="absolute inset-0 overflow-hidden">
           {/* Central glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-gradient-radial from-primary/20 via-primary/5 to-transparent blur-3xl" />
-          {/* Top left accent */}
-          <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-primary/15 blur-[100px] animate-pulse" />
-          {/* Bottom right accent */}
-          <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-primary/10 blur-[80px] animate-pulse" style={{ animationDelay: "1s" }} />
-          {/* Subtle moving orbs */}
-          <div className="absolute top-1/4 right-1/4 w-48 h-48 rounded-full bg-emerald-500/10 blur-[60px] animate-float" />
-          <div className="absolute bottom-1/3 left-1/4 w-64 h-64 rounded-full bg-primary/10 blur-[70px] animate-float" style={{ animationDelay: "2s" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-gradient-radial from-primary/15 via-primary/5 to-transparent blur-3xl" />
+          {/* Top accent */}
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-primary/10 blur-[100px]" />
         </div>
         
         <div className="container relative z-10 pt-20 pb-24 md:pt-28 md:pb-32">
