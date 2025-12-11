@@ -29,6 +29,19 @@ const Index = () => {
     <Layout>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background">
+        {/* Gradient glow backdrop */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Central glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-gradient-radial from-primary/20 via-primary/5 to-transparent blur-3xl" />
+          {/* Top left accent */}
+          <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-primary/15 blur-[100px] animate-pulse" />
+          {/* Bottom right accent */}
+          <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-primary/10 blur-[80px] animate-pulse" style={{ animationDelay: "1s" }} />
+          {/* Subtle moving orbs */}
+          <div className="absolute top-1/4 right-1/4 w-48 h-48 rounded-full bg-emerald-500/10 blur-[60px] animate-float" />
+          <div className="absolute bottom-1/3 left-1/4 w-64 h-64 rounded-full bg-primary/10 blur-[70px] animate-float" style={{ animationDelay: "2s" }} />
+        </div>
+        
         <div className="container relative z-10 pt-20 pb-24 md:pt-28 md:pb-32">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 leading-[1.1] tracking-tight opacity-0 animate-fade-in-down">
@@ -53,7 +66,7 @@ const Index = () => {
                 <Link
                   key={category}
                   to={`/${townSlug}/category/${getCategorySlug(category)}`}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-card border border-border text-sm font-medium text-foreground hover:border-primary hover:bg-primary/5 hover:scale-105 transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-card/80 backdrop-blur-sm border border-border text-sm font-medium text-foreground hover:border-primary hover:bg-primary/5 hover:scale-105 transition-all duration-300"
                   style={{ animationDelay: `${0.4 + index * 0.05}s` }}
                 >
                   <span className="text-primary">{categoryIcons[category]}</span>
@@ -62,7 +75,7 @@ const Index = () => {
               ))}
               <Link
                 to={`/${townSlug}/categories`}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 hover:scale-105 transition-all duration-300 shadow-lg shadow-primary/25"
               >
                 View All
                 <ArrowRight className="w-4 h-4" />
@@ -70,10 +83,6 @@ const Index = () => {
             </div>
           </div>
         </div>
-        
-        {/* Subtle decorative elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-pulse" />
-        <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </section>
 
       {/* Featured Local Picks */}

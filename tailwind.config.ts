@@ -87,6 +87,9 @@ export default {
         xl: "var(--shadow-xl)",
         glow: "var(--shadow-glow)",
       },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
