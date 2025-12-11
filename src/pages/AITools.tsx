@@ -1,6 +1,7 @@
 import { Bot, MessageSquare, Share2, Calendar, Sparkles, ArrowRight, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import LogoBanner from "@/components/LogoBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +63,9 @@ const AITools = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-b from-primary/10 to-background overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.15),transparent_50%)]" />
