@@ -107,6 +107,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to={`/${townSlug}/local-guides`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Local Guides
+                </Link>
+              </li>
+              <li>
                 <Link to={`/${townSlug}/add-listing`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Add Your Business
                 </Link>

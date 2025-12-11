@@ -12,6 +12,7 @@ import Business from "./pages/Business";
 import AddListing from "./pages/AddListing";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import LocalGuides from "./pages/LocalGuides";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const AnimatedRoutes = () => {
               <Route path="/add-listing" element={<AddListing />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/about" element={<About />} />
+              <Route path="/local-guides" element={<LocalGuides />} />
             </Routes>
           </TownProvider>
         } />
