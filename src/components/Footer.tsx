@@ -155,9 +155,11 @@ const Footer = () => {
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} Discover Local. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Made with ❤️ in {town.name}, {town.postcode}
-          </p>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Terms</Link>
+            <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Privacy</Link>
+            <span>Made with ❤️ in {town.name}</span>
+          </div>
         </div>
       </div>
     </footer>
