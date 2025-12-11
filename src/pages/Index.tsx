@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy } from "lucide-react";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
+import discoverLocalLogo from "@/assets/discover-local-logo.png";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
@@ -32,6 +33,17 @@ const Index = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <section className="py-6 bg-gradient-to-r from-background via-card to-background border-b border-border">
+        <div className="container flex justify-center">
+          <img 
+            src={discoverLocalLogo} 
+            alt="Discover Local Grantham" 
+            className="h-16 md:h-20 w-auto object-contain drop-shadow-lg"
+          />
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background Image */}
