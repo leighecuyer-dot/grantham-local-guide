@@ -2,6 +2,7 @@ export type Category =
   | "Café"
   | "Restaurant"
   | "Barbers"
+  | "Hairdressers"
   | "Beauty"
   | "Retail"
   | "Trades"
@@ -45,6 +46,7 @@ export const CATEGORIES: Category[] = [
   "Café",
   "Restaurant",
   "Barbers",
+  "Hairdressers",
   "Beauty",
   "Retail",
   "Trades",
@@ -67,6 +69,7 @@ export const getCategoryIcon = (category: Category): string => {
     "Café": "☕",
     "Restaurant": "🍽️",
     "Barbers": "✂️",
+    "Hairdressers": "💇",
     "Beauty": "💅",
     "Retail": "🛍️",
     "Trades": "🔧",

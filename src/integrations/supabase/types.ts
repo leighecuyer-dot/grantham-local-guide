@@ -145,6 +145,7 @@ export type Database = {
         | "Services"
         | "Gyms & Fitness"
         | "Sport Clubs"
+        | "Hairdressers"
       business_tag:
         | "Independent"
         | "Family-run"
@@ -291,6 +292,7 @@ export const Constants = {
         "Services",
         "Gyms & Fitness",
         "Sport Clubs",
+        "Hairdressers",
       ],
       business_tag: [
         "Independent",

@@ -13,6 +13,7 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   "Café": <Coffee className="w-5 h-5" />,
   "Restaurant": <Utensils className="w-5 h-5" />,
   "Barbers": <Scissors className="w-5 h-5" />,
+  "Hairdressers": <Scissors className="w-5 h-5" />,
   "Beauty": <Sparkles className="w-5 h-5" />,
   "Retail": <ShoppingBag className="w-5 h-5" />,
   "Trades": <Wrench className="w-5 h-5" />,
