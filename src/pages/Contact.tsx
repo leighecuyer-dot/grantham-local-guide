@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import LogoBanner from "@/components/LogoBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -48,6 +49,9 @@ const Contact = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero */}
       <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
         <div className="container text-center">

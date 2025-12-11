@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
+import LogoBanner from "@/components/LogoBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -56,6 +57,9 @@ const AddListing = () => {
 
   return (
     <Layout>
+      {/* Logo Banner */}
+      <LogoBanner showTagline={false} />
+
       {/* Hero */}
       <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
         <div className="container max-w-2xl">
