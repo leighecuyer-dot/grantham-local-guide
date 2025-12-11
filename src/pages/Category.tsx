@@ -7,11 +7,13 @@ import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, getCategoryIcon } from "@/types/business";
 import { getBusinessesByCategory } from "@/data/businesses";
+import { useTown } from "@/contexts/TownContext";
 
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = getCategoryFromSlug(slug || "");
   const [searchQuery, setSearchQuery] = useState("");
+  const { town, townSlug } = useTown();
 
   if (!category) {
     return (
@@ -24,7 +26,7 @@ const Category = () => {
             Sorry, we couldn't find that category.
           </p>
           <Button asChild>
-            <Link to="/categories">Browse All Categories</Link>
+            <Link to={`/${townSlug}/categories`}>Browse All Categories</Link>
           </Button>
         </div>
       </Layout>
@@ -57,7 +59,7 @@ const Category = () => {
       <section className="bg-gradient-to-b from-green-light to-background py-12 md:py-16">
         <div className="container">
           <Button asChild variant="ghost" className="mb-6 -ml-4">
-            <Link to="/categories">
+            <Link to={`/${townSlug}/categories`}>
               <ChevronLeft className="w-4 h-4 mr-1" />
               All Categories
             </Link>
@@ -65,11 +67,11 @@ const Category = () => {
           <div className="flex items-center gap-4 mb-4">
             <span className="text-4xl">{getCategoryIcon(category)}</span>
             <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
-              Best {category} in Grantham
+              Best {category} in {town.name}
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mb-8">
-            Browse Grantham's top {category.toLowerCase()} below. 
+            Browse {town.name}'s top {category.toLowerCase()} below. 
             {featuredCount > 0 && " Featured businesses are shown first."}
           </p>
           <SearchBar
@@ -92,7 +94,7 @@ const Category = () => {
               </p>
               {!searchQuery && (
                 <Button asChild>
-                  <Link to="/add-listing">Add Your Business</Link>
+                  <Link to={`/${townSlug}/add-listing`}>Add Your Business</Link>
                 </Button>
               )}
             </div>

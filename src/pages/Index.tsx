@@ -7,10 +7,12 @@ import CategoryCard from "@/components/CategoryCard";
 import SearchBar from "@/components/SearchBar";
 import { CATEGORIES } from "@/types/business";
 import { getFeaturedBusinesses, getLatestBusinesses } from "@/data/businesses";
+import { useTown } from "@/contexts/TownContext";
 
 const Index = () => {
   const featuredBusinesses = getFeaturedBusinesses();
   const latestBusinesses = getLatestBusinesses(6);
+  const { town, townSlug } = useTown();
 
   return (
     <Layout>
@@ -24,7 +26,7 @@ const Index = () => {
             </div>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-foreground mb-6 animate-fade-in leading-[1.1]">
               Discover the Best Local Businesses in{" "}
-              <span className="gradient-text">Grantham</span>
+              <span className="gradient-text">{town.name}</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.1s" }}>
               A modern directory for cafés, barbers, beauty, shops, services and hidden gems. Visual, searchable, and beautifully designed.
@@ -39,14 +41,14 @@ const Index = () => {
               {CATEGORIES.slice(0, 5).map((category) => (
                 <Link
                   key={category}
-                  to={`/category/${category.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "and")}`}
+                  to={`/${townSlug}/category/${category.toLowerCase().replace(/\s+/g, "-").replace(/&/g, "and")}`}
                   className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium text-foreground hover:border-primary hover:text-primary transition-colors"
                 >
                   {category}
                 </Link>
               ))}
               <Link
-                to="/categories"
+                to={`/${townSlug}/categories`}
                 className="px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 View All →
@@ -123,7 +125,7 @@ const Index = () => {
               </h2>
             </div>
             <Button asChild variant="outline" className="w-fit">
-              <Link to="/categories">
+              <Link to={`/${townSlug}/categories`}>
                 View all
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
@@ -147,7 +149,7 @@ const Index = () => {
               Browse by Category
             </h2>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Find exactly what you're looking for in Grantham
+              Find exactly what you're looking for in {town.name}
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -192,10 +194,10 @@ const Index = () => {
                 Own a Local Business?
               </h2>
               <p className="text-primary-foreground/90 mb-8 max-w-lg mx-auto text-lg">
-                Get your business listed in our directory and reach more customers in Grantham. It's completely free!
+                Get your business listed in our directory and reach more customers in {town.name}. It's completely free!
               </p>
               <Button asChild size="lg" variant="secondary" className="font-semibold">
-                <Link to="/add-listing">
+                <Link to={`/${townSlug}/add-listing`}>
                   Add Your Business Free
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,9 +15,11 @@ import {
 import { CATEGORIES } from "@/types/business";
 import { toast } from "@/hooks/use-toast";
 import { CheckCircle } from "lucide-react";
+import { useTown } from "@/contexts/TownContext";
 
 const AddListing = () => {
   const [submitted, setSubmitted] = useState(false);
+  const { townSlug } = useTown();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +46,7 @@ const AddListing = () => {
               add it to the directory within 2-3 business days.
             </p>
             <Button asChild>
-              <a href="/">Return Home</a>
+              <Link to={`/${townSlug}`}>Return Home</Link>
             </Button>
           </div>
         </section>

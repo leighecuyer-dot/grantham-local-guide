@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MapPin, Star, ExternalLink } from "lucide-react";
 import { Business, getCategoryIcon } from "@/types/business";
 import { Badge } from "@/components/ui/badge";
+import { useTown } from "@/contexts/TownContext";
 
 interface BusinessCardProps {
   business: Business;
@@ -33,9 +34,11 @@ const TripAdvisorRating = ({ rating }: { rating: number }) => {
 };
 
 const BusinessCard = ({ business }: BusinessCardProps) => {
+  const { townSlug } = useTown();
+
   return (
     <Link
-      to={`/business/${business.slug}`}
+      to={`/${townSlug}/business/${business.slug}`}
       className="group block bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 shadow-sm hover:shadow-lg transition-all duration-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">

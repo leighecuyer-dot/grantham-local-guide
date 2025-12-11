@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getBusinessBySlug, getRelatedBusinesses } from "@/data/businesses";
 import { getCategoryIcon, getCategorySlug } from "@/types/business";
+import { useTown } from "@/contexts/TownContext";
 
 const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) => {
   const fullStars = Math.floor(rating);
@@ -51,6 +52,7 @@ const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) =>
 const Business = () => {
   const { slug } = useParams<{ slug: string }>();
   const business = getBusinessBySlug(slug || "");
+  const { town, townSlug } = useTown();
 
   if (!business) {
     return (
@@ -63,7 +65,7 @@ const Business = () => {
             Sorry, we couldn't find that business.
           </p>
           <Button asChild size="lg">
-            <Link to="/categories">Browse Directory</Link>
+            <Link to={`/${townSlug}/categories`}>Browse Directory</Link>
           </Button>
         </div>
       </Layout>
@@ -89,7 +91,7 @@ const Business = () => {
       <section className="py-10 md:py-14">
         <div className="container">
           <Button asChild variant="ghost" className="mb-8 -ml-4 text-muted-foreground hover:text-foreground">
-            <Link to={`/category/${getCategorySlug(business.category)}`}>
+            <Link to={`/${townSlug}/category/${getCategorySlug(business.category)}`}>
               <ChevronLeft className="w-4 h-4 mr-1" />
               Back to {business.category}
             </Link>
@@ -207,7 +209,7 @@ const Business = () => {
                     Is this your business?
                   </p>
                   <Button asChild variant="outline" className="w-full rounded-xl">
-                    <Link to="/contact">Claim Listing</Link>
+                    <Link to={`/${townSlug}/contact`}>Claim Listing</Link>
                   </Button>
                 </div>
               </div>
@@ -221,7 +223,7 @@ const Business = () => {
         <section className="py-16 md:py-20 bg-muted/40 border-t border-border">
           <div className="container">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-10">
-              More {business.category} in Grantham
+              More {business.category} in {town.name}
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {relatedBusinesses.map((related) => (

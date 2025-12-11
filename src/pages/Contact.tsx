@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Mail, MapPin, CheckCircle } from "lucide-react";
+import { useTown } from "@/contexts/TownContext";
 
 const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
+  const { townSlug } = useTown();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +38,7 @@ const Contact = () => {
               1-2 business days.
             </p>
             <Button asChild>
-              <a href="/">Return Home</a>
+              <Link to={`/${townSlug}`}>Return Home</Link>
             </Button>
           </div>
         </section>

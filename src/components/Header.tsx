@@ -1,32 +1,64 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Plus } from "lucide-react";
+import { Menu, X, Plus, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/categories", label: "Browse" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-];
+import { useTown, TOWNS } from "@/contexts/TownContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { town, townSlug } = useTown();
+
+  const navLinks = [
+    { href: `/${townSlug}`, label: "Home" },
+    { href: `/${townSlug}/categories`, label: "Browse" },
+    { href: `/${townSlug}/about`, label: "About" },
+    { href: `/${townSlug}/contact`, label: "Contact" },
+  ];
+
+  const isActive = (href: string) => {
+    if (href === `/${townSlug}`) {
+      return location.pathname === `/${townSlug}` || location.pathname === `/${townSlug}/`;
+    }
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="container flex h-18 items-center justify-between py-3">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to={`/${townSlug}`} className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-green-600 shadow-md">
-            <span className="text-lg font-bold text-primary-foreground">G</span>
+            <span className="text-lg font-bold text-primary-foreground">D</span>
           </div>
           <div className="flex flex-col">
             <span className="font-display text-lg font-bold text-foreground leading-tight">
               Discover Local
             </span>
-            <span className="text-xs text-muted-foreground hidden sm:block">Grantham</span>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                {town.name}
+                <ChevronDown className="w-3 h-3" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {TOWNS.map((t) => (
+                  <DropdownMenuItem key={t.slug} asChild>
+                    <Link 
+                      to={`/${t.slug}`}
+                      className={cn(t.slug === townSlug && "font-medium text-primary")}
+                    >
+                      {t.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </Link>
 
@@ -38,7 +70,7 @@ const Header = () => {
               to={link.href}
               className={cn(
                 "px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
-                location.pathname === link.href
+                isActive(link.href)
                   ? "text-primary bg-green-50"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
@@ -47,7 +79,7 @@ const Header = () => {
             </Link>
           ))}
           <Button asChild className="ml-2 rounded-xl" size="sm">
-            <Link to="/add-listing">
+            <Link to={`/${townSlug}/add-listing`}>
               <Plus className="w-4 h-4 mr-1.5" />
               Add Listing
             </Link>
@@ -77,7 +109,7 @@ const Header = () => {
                 onClick={() => setIsOpen(false)}
                 className={cn(
                   "px-4 py-3.5 text-sm font-medium rounded-xl transition-colors",
-                  location.pathname === link.href
+                  isActive(link.href)
                     ? "text-primary bg-green-50"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
@@ -86,7 +118,7 @@ const Header = () => {
               </Link>
             ))}
             <Link
-              to="/add-listing"
+              to={`/${townSlug}/add-listing`}
               onClick={() => setIsOpen(false)}
               className="mt-2 px-4 py-3.5 text-sm font-medium rounded-xl bg-primary text-primary-foreground text-center"
             >
