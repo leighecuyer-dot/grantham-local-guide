@@ -47,7 +47,7 @@ const Index = () => {
         </Button>
         <Link 
           to={`/${townSlug}/advertise`}
-          className="inline-flex items-center justify-center gap-2 mt-4 px-4 py-2 text-sm bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all group"
+          className="inline-flex items-center justify-center gap-2 mt-6 px-4 py-2 text-sm bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all group"
         >
           <Zap className="w-3.5 h-3.5 text-primary" />
           <span><span className="text-primary font-semibold">Founder Pricing</span> – Lock in discounted rates for 6 months</span>
