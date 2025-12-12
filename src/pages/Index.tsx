@@ -50,6 +50,7 @@ const Index = () => {
         >
           <Zap className="w-3.5 h-3.5 text-primary" />
           <span><span className="text-primary font-semibold">Founder Pricing</span> – Lock in discounted rates for 6 months</span>
+          <span className="px-2 py-0.5 text-xs font-medium bg-primary/20 text-primary rounded-full animate-pulse">Limited spots</span>
           <ArrowRight className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </Link>
       </div>
