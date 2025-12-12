@@ -12,6 +12,8 @@ import { useTown } from "@/contexts/TownContext";
 import { supabase } from "@/integrations/supabase/client";
 import { SUBSCRIPTION_TIERS, getTierByProductId, SubscriptionTier } from "@/lib/stripe-config";
 import { toast } from "@/hooks/use-toast";
+import granthamSkyline from "@/assets/grantham-skyline.jpg";
+import discoverLocalLogo from "@/assets/discover-local-logo.png";
 
 const Advertise = () => {
   const { town, townSlug } = useTown();
@@ -154,8 +156,28 @@ const Advertise = () => {
 
   return (
     <Layout>
-      {/* Logo Banner */}
-      <LogoBanner showTagline={false} />
+      {/* Logo Banner with Background */}
+      <section className="relative w-full py-16 md:py-20 lg:py-24 border-b border-primary/20 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${granthamSkyline})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background/90" />
+        <div className="absolute inset-0 bg-primary/10" />
+        
+        {/* Logo Content */}
+        <div className="relative z-10 w-full flex flex-col items-center px-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/30 blur-3xl rounded-full scale-110 animate-pulse" />
+            <img 
+              src={discoverLocalLogo} 
+              alt="Discover Local" 
+              className="relative h-48 md:h-64 lg:h-80 xl:h-96 max-w-full object-contain drop-shadow-2xl opacity-0 animate-fade-in"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-b from-primary/10 to-background overflow-hidden">
