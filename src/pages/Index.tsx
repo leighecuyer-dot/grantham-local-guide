@@ -36,6 +36,16 @@ const Index = () => {
       {/* Logo Banner */}
       <LogoBanner />
 
+      {/* List Your Business CTA */}
+      <div className="py-4 text-center bg-gradient-to-r from-transparent via-muted/30 to-transparent">
+        <Button asChild variant="outline" size="lg" className="border-primary/50 hover:bg-primary hover:text-primary-foreground transition-all">
+          <Link to={`/${townSlug}/add-listing`}>
+            List Your Business
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Link>
+        </Button>
+      </div>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background Image */}
