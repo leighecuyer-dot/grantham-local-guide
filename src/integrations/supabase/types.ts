@@ -147,6 +147,8 @@ export type Database = {
         | "Sport Clubs"
         | "Hairdressers"
         | "IT & Technology"
+        | "Hotels & Accommodation"
+        | "Health & Wellbeing"
       business_tag:
         | "Independent"
         | "Family-run"
@@ -295,6 +297,8 @@ export const Constants = {
         "Sport Clubs",
         "Hairdressers",
         "IT & Technology",
+        "Hotels & Accommodation",
+        "Health & Wellbeing",
       ],
       business_tag: [
         "Independent",
