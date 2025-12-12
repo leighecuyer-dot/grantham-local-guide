@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap } from "lucide-react";
+import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap, Monitor } from "lucide-react";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
@@ -23,6 +23,7 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   "Services": <Briefcase className="w-5 h-5" />,
   "Gyms & Fitness": <Dumbbell className="w-5 h-5" />,
   "Sport Clubs": <Trophy className="w-5 h-5" />,
+  "IT & Technology": <Monitor className="w-5 h-5" />,
 };
 
 const Index = () => {
@@ -40,7 +41,7 @@ const Index = () => {
       <div className="py-4 text-center bg-gradient-to-r from-transparent via-muted/30 to-transparent">
         <Button asChild variant="outline" size="lg" className="border-primary/50 hover:bg-primary hover:text-primary-foreground transition-all">
           <Link to={`/${townSlug}/add-listing`}>
-            List Your Business
+            List Your Business Free
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
         </Button>
