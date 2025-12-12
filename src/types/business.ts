@@ -10,7 +10,9 @@ export type Category =
   | "Services"
   | "Gyms & Fitness"
   | "Sport Clubs"
-  | "IT & Technology";
+  | "IT & Technology"
+  | "Hotels & Accommodation"
+  | "Health & Wellbeing";
 
 export type BusinessTag = "Independent" | "Family-run" | "Local favourite" | "Hidden gem" | "Award-winning" | "Eco-friendly";
 
@@ -56,6 +58,8 @@ export const CATEGORIES: Category[] = [
   "Gyms & Fitness",
   "Sport Clubs",
   "IT & Technology",
+  "Hotels & Accommodation",
+  "Health & Wellbeing",
 ];
 
 export const getCategorySlug = (category: Category): string => {
@@ -80,6 +84,8 @@ export const getCategoryIcon = (category: Category): string => {
     "Gyms & Fitness": "💪",
     "Sport Clubs": "⚽",
     "IT & Technology": "💻",
+    "Hotels & Accommodation": "🏨",
+    "Health & Wellbeing": "🧘",
   };
   return icons[category];
 };

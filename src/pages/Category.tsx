@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
 import { useBusinessesByCategory } from "@/hooks/useBusinesses";
 import { useTown } from "@/contexts/TownContext";
-import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor } from "lucide-react";
+import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart } from "lucide-react";
 
 const categoryIcons: Record<CategoryType, React.ReactNode> = {
   "Café": <Coffee className="w-6 h-6" />,
@@ -24,6 +24,8 @@ const categoryIcons: Record<CategoryType, React.ReactNode> = {
   "Gyms & Fitness": <Dumbbell className="w-6 h-6" />,
   "Sport Clubs": <Trophy className="w-6 h-6" />,
   "IT & Technology": <Monitor className="w-6 h-6" />,
+  "Hotels & Accommodation": <Hotel className="w-6 h-6" />,
+  "Health & Wellbeing": <Heart className="w-6 h-6" />,
 };
 
 const categoryDescriptions: Record<CategoryType, string> = {
@@ -39,6 +41,8 @@ const categoryDescriptions: Record<CategoryType, string> = {
   "Gyms & Fitness": "Gyms, fitness studios, and wellness centres",
   "Sport Clubs": "Local sports clubs, teams, and athletic organisations",
   "IT & Technology": "IT support, software development, and tech services",
+  "Hotels & Accommodation": "Hotels, B&Bs, guest houses, and holiday rentals",
+  "Health & Wellbeing": "Therapists, wellness centres, and holistic health services",
 };
 
 const Category = () => {

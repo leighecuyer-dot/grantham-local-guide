@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap, Monitor } from "lucide-react";
+import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap, Monitor, Hotel, Heart } from "lucide-react";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
@@ -24,6 +24,8 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   "Gyms & Fitness": <Dumbbell className="w-5 h-5" />,
   "Sport Clubs": <Trophy className="w-5 h-5" />,
   "IT & Technology": <Monitor className="w-5 h-5" />,
+  "Hotels & Accommodation": <Hotel className="w-5 h-5" />,
+  "Health & Wellbeing": <Heart className="w-5 h-5" />,
 };
 
 const Index = () => {
