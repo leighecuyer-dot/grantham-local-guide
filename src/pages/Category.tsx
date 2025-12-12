@@ -7,7 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
-import { getBusinessesByCategory } from "@/data/businesses";
+import { useBusinessesByCategory } from "@/hooks/useBusinesses";
 import { useTown } from "@/contexts/TownContext";
 import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor } from "lucide-react";
 
@@ -66,7 +66,7 @@ const Category = () => {
     );
   }
 
-  const allBusinesses = getBusinessesByCategory(category);
+  const { data: allBusinesses = [], isLoading } = useBusinessesByCategory(category, town.slug);
 
   const filteredBusinesses = useMemo(() => {
     let result = [...allBusinesses].sort((a, b) => 
