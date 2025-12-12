@@ -137,7 +137,10 @@ const AddListing = () => {
               </p>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-4 space-y-3">
+              <p className="text-sm text-primary font-medium">
+                ✓ You're joining at Founder Pricing. This rate is guaranteed for 6 months.
+              </p>
               <Button type="submit" size="lg" className="w-full sm:w-auto">
                 Submit Listing
               </Button>

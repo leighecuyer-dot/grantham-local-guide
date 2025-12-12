@@ -167,9 +167,14 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Discover Local. All rights reserved.
-          </p>
+          <div className="text-center sm:text-left">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Discover Local. All rights reserved.
+            </p>
+            <p className="text-xs text-primary/70 mt-1">
+              Founder Pricing available during launch period.
+            </p>
+          </div>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Terms</Link>
             <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Privacy</Link>
