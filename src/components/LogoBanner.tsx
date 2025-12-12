@@ -18,7 +18,7 @@ const LogoBanner = ({ showTagline = true }: LogoBannerProps) => {
         </div>
         {showTagline && (
           <p className="mt-6 md:mt-8 text-lg md:text-xl lg:text-2xl text-muted-foreground font-medium tracking-wide opacity-0 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Your guide to local businesses
+            Your guide to Grantham's Businesses
           </p>
         )}
       </div>
