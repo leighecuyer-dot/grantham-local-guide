@@ -44,6 +44,14 @@ const Index = () => {
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
         </Button>
+        <Link 
+          to={`/${townSlug}/advertise`}
+          className="flex items-center justify-center gap-2 mt-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
+        >
+          <Zap className="w-3 h-3 text-primary" />
+          <span><span className="text-primary font-medium">Founder Pricing</span> – Lock in discounted rates for 6 months</span>
+          <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+        </Link>
       </div>
 
       {/* Hero Section */}
@@ -103,22 +111,6 @@ const Index = () => {
               </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Founder Pricing Banner */}
-      <section className="py-3 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-y border-primary/20">
-        <div className="container">
-          <Link 
-            to={`/${townSlug}/advertise`}
-            className="flex items-center justify-center gap-3 text-center group"
-          >
-            <Zap className="w-4 h-4 text-primary animate-pulse" />
-            <span className="text-sm md:text-base font-medium text-foreground">
-              <span className="text-primary font-semibold">Founder Pricing</span> – Early businesses lock in discounted rates for 6 months
-            </span>
-            <ArrowRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-          </Link>
         </div>
       </section>
 
