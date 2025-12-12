@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy } from "lucide-react";
+import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap } from "lucide-react";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
@@ -93,6 +93,22 @@ const Index = () => {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Founder Pricing Banner */}
+      <section className="py-3 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border-y border-primary/20">
+        <div className="container">
+          <Link 
+            to={`/${townSlug}/advertise`}
+            className="flex items-center justify-center gap-3 text-center group"
+          >
+            <Zap className="w-4 h-4 text-primary animate-pulse" />
+            <span className="text-sm md:text-base font-medium text-foreground">
+              <span className="text-primary font-semibold">Founder Pricing</span> – Early businesses lock in discounted rates for 6 months
+            </span>
+            <ArrowRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+          </Link>
         </div>
       </section>
 
