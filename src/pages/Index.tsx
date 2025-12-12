@@ -46,11 +46,11 @@ const Index = () => {
         </Button>
         <Link 
           to={`/${townSlug}/advertise`}
-          className="flex items-center justify-center gap-2 mt-3 text-sm text-muted-foreground hover:text-primary transition-colors group"
+          className="inline-flex items-center justify-center gap-2 mt-4 px-4 py-2 text-sm bg-primary/10 border border-primary/20 rounded-full hover:bg-primary/20 transition-all group"
         >
-          <Zap className="w-3 h-3 text-primary" />
-          <span><span className="text-primary font-medium">Founder Pricing</span> – Lock in discounted rates for 6 months</span>
-          <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+          <Zap className="w-3.5 h-3.5 text-primary" />
+          <span><span className="text-primary font-semibold">Founder Pricing</span> – Lock in discounted rates for 6 months</span>
+          <ArrowRight className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
         </Link>
       </div>
 
