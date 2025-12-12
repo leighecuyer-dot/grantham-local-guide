@@ -5,7 +5,8 @@ import LogoBanner from "@/components/LogoBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Star, Zap, Crown, ArrowRight, Loader2 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Check, Star, Zap, Crown, ArrowRight, Loader2, ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTown } from "@/contexts/TownContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -201,6 +202,32 @@ const Advertise = () => {
           </div>
         </section>
       )}
+
+      {/* Founder Pricing Header */}
+      <section className="py-8 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-primary/20">
+        <div className="container mx-auto px-4 text-center">
+          <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-4">
+            ⚡ Founder Pricing – Limited Time
+          </Badge>
+          <p className="text-muted-foreground max-w-xl mx-auto mb-4">
+            Be an early adopter and lock in these discounted rates for 6 months. 
+            After launch, prices will increase — but your rate stays the same.
+          </p>
+          <Collapsible>
+            <CollapsibleTrigger className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+              Learn more about Founder Pricing
+              <ChevronDown className="w-4 h-4" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4 text-left max-w-xl mx-auto">
+              <div className="bg-card border border-border rounded-lg p-4 text-sm text-muted-foreground space-y-2">
+                <p><strong className="text-foreground">How it works:</strong> Sign up during our launch period and your monthly rate is guaranteed for 6 months from your subscription start date.</p>
+                <p><strong className="text-foreground">After 6 months:</strong> Your plan will continue at the then-current rate, which you can cancel anytime before renewal.</p>
+                <p><strong className="text-foreground">No lock-in:</strong> Cancel anytime. Your benefits continue until the end of your billing period.</p>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </section>
 
       {/* Pricing Section */}
       <section className="py-16 bg-background">
