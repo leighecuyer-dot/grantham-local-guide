@@ -14,7 +14,7 @@ export const SUBSCRIPTION_TIERS = {
   },
   featured: {
     name: "Featured",
-    price: 5,
+    price: 7.5,
     priceId: "price_1SdH1mPmajPuonYtmz7mTMNx",
     productId: "prod_TaRvdpYtRpyuTO",
     features: [
@@ -27,7 +27,7 @@ export const SUBSCRIPTION_TIERS = {
   },
   premium: {
     name: "Premium",
-    price: 20,
+    price: 25,
     priceId: "price_1SdQUfPmajPuonYtomrJMwWX",
     productId: "prod_TabihOQjWEmFj0",
     features: [
