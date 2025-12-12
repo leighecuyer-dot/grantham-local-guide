@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Layout from "@/components/Layout";
 import LogoBanner from "@/components/LogoBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -13,17 +15,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { CATEGORIES } from "@/types/business";
 import { toast } from "@/hooks/use-toast";
 import { CheckCircle } from "lucide-react";
 import { useTown } from "@/contexts/TownContext";
 
+const listingSchema = z.object({
+  name: z.string().trim().min(1, "Business name is required").max(100, "Name must be less than 100 characters"),
+  category: z.string().min(1, "Please select a category"),
+  description: z.string().trim().min(1, "Description is required").max(1000, "Description must be less than 1000 characters"),
+  address: z.string().trim().min(1, "Address is required").max(200, "Address must be less than 200 characters"),
+  phone: z.string().trim().max(20, "Phone must be less than 20 characters").optional().or(z.literal("")),
+  website: z.string().trim().url("Please enter a valid URL").optional().or(z.literal("")),
+  instagram: z.string().trim().url("Please enter a valid Instagram URL").optional().or(z.literal("")),
+  email: z.string().trim().email("Please enter a valid email address").max(255, "Email must be less than 255 characters"),
+});
+
+type ListingFormData = z.infer<typeof listingSchema>;
+
 const AddListing = () => {
   const [submitted, setSubmitted] = useState(false);
   const { townSlug } = useTown();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<ListingFormData>({
+    resolver: zodResolver(listingSchema),
+    defaultValues: {
+      name: "",
+      category: "",
+      description: "",
+      address: "",
+      phone: "",
+      website: "",
+      instagram: "",
+      email: "",
+    },
+  });
+
+  const onSubmit = (data: ListingFormData) => {
+    console.log("Validated listing data:", data);
     setSubmitted(true);
     toast({
       title: "Submission Received!",
@@ -76,76 +113,149 @@ const AddListing = () => {
       {/* Form */}
       <section className="py-12 md:py-16">
         <div className="container max-w-2xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Business Name *</Label>
-              <Input id="name" placeholder="e.g. The Green Bean Café" required />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
-              <Select required>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="description">Description *</Label>
-              <Textarea
-                id="description"
-                placeholder="Tell us about your business..."
-                rows={4}
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business Name *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. The Green Bean Café" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="address">Address *</Label>
-              <Input id="address" placeholder="e.g. 12 High Street, Grantham, NG31 6PN" required />
-            </div>
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category *</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {CATEGORIES.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" type="tel" placeholder="e.g. 01476 123456" />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description *</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell us about your business..."
+                        rows={4}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. 12 High Street, Grantham, NG31 6PN" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="e.g. 01476 123456" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="website"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Website</FormLabel>
+                      <FormControl>
+                        <Input type="url" placeholder="https://" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
-                <Input id="website" type="url" placeholder="https://" />
+
+              <FormField
+                control={form.control}
+                name="instagram"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Instagram URL</FormLabel>
+                    <FormControl>
+                      <Input type="url" placeholder="https://instagram.com/yourbusiness" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Email *</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="you@example.com" {...field} />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      We'll use this to confirm your listing. Not displayed publicly.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="pt-4 space-y-3">
+                <p className="text-sm text-primary font-medium">
+                  ✓ You're joining at Founder Pricing. This rate is guaranteed for 6 months.
+                </p>
+                <Button type="submit" size="lg" className="w-full sm:w-auto">
+                  Submit Listing
+                </Button>
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="instagram">Instagram URL</Label>
-              <Input id="instagram" type="url" placeholder="https://instagram.com/yourbusiness" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Your Email *</Label>
-              <Input id="email" type="email" placeholder="you@example.com" required />
-              <p className="text-sm text-muted-foreground">
-                We'll use this to confirm your listing. Not displayed publicly.
-              </p>
-            </div>
-
-            <div className="pt-4 space-y-3">
-              <p className="text-sm text-primary font-medium">
-                ✓ You're joining at Founder Pricing. This rate is guaranteed for 6 months.
-              </p>
-              <Button type="submit" size="lg" className="w-full sm:w-auto">
-                Submit Listing
-              </Button>
-            </div>
-          </form>
+            </form>
+          </Form>
         </div>
       </section>
     </Layout>
