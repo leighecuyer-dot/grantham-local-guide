@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload } from "lucide-react";
+import { BulkImport } from "@/components/admin/BulkImport";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -368,6 +369,13 @@ const Admin = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBusiness, setEditingBusiness] = useState<any>(null);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
+
+  const handleBulkImport = async (businesses: CreateBusinessInput[]) => {
+    for (const business of businesses) {
+      await createBusiness.mutateAsync(business);
+    }
+  };
 
   if (authLoading || adminLoading) {
     return (
@@ -433,6 +441,20 @@ const Admin = () => {
             <p className="text-muted-foreground">Manage your business listings</p>
           </div>
           <div className="flex gap-2">
+            <Dialog open={bulkImportOpen} onOpenChange={setBulkImportOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Bulk Import
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Bulk Import Businesses</DialogTitle>
+                </DialogHeader>
+                <BulkImport onImport={handleBulkImport} />
+              </DialogContent>
+            </Dialog>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={() => setEditingBusiness(null)}>
