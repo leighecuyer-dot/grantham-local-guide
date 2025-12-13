@@ -178,6 +178,7 @@ const Footer = () => {
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Terms</Link>
             <Link to={`/${townSlug}/about`} className="hover:text-primary transition-colors">Privacy</Link>
+            <Link to="/admin" className="hover:text-primary transition-colors">Admin</Link>
             <span>Made with ❤️ in {town.name}</span>
           </div>
         </div>
