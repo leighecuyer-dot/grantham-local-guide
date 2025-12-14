@@ -29,6 +29,12 @@ interface ParsedRow {
   tripadvisor_rating?: number | string;
   tripadvisor_url?: string;
   tags?: string;
+  // Extended fields for user's custom columns
+  description_2?: string;
+  rewritten_description?: string;
+  google_rating?: number | string;
+  google_maps_url?: string;
+  opening_hours?: string;
 }
 
 const EXPECTED_COLUMNS = [
@@ -47,6 +53,47 @@ const EXPECTED_COLUMNS = [
   "tripadvisor_url",
   "tags",
 ];
+
+// Column name mappings to handle variations
+const COLUMN_MAPPINGS: Record<string, string> = {
+  // Name variations
+  "business_name": "name",
+  "business name": "name",
+  "businessname": "name",
+  // Category
+  // Phone variations
+  "phone_no": "phone",
+  "phone no": "phone",
+  "phoneno": "phone",
+  "telephone": "phone",
+  "tel": "phone",
+  // Social media
+  "social_media_link": "instagram",
+  "social media link": "instagram",
+  "socialmedialink": "instagram",
+  "social": "instagram",
+  // Description variations - use "rewritten_description" or combine
+  "rewritten_description": "description",
+  "rewritten description": "description",
+  "description_1": "description",
+  "description 1": "description",
+  // Google review as rating
+  "google_review_score": "google_rating",
+  "google review score": "google_rating",
+  "googlereviewscore": "google_rating",
+  // Google maps link
+  "google_maps_link": "google_maps_url",
+  "google maps link": "google_maps_url",
+  "googlemapslink": "google_maps_url",
+  // Opening hours (new field we'll capture)
+  "opening_hours": "opening_hours",
+  "openinghours": "opening_hours",
+};
+
+const normalizeHeader = (header: string): string => {
+  const normalized = header.toLowerCase().trim().replace(/\s+/g, "_");
+  return COLUMN_MAPPINGS[normalized] || COLUMN_MAPPINGS[header.toLowerCase().trim()] || normalized;
+};
 
 const generateSlug = (name: string) => {
   return name
@@ -94,8 +141,14 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       errors.push(`Row ${rowNum}: Missing category`);
       return;
     }
-    if (!row.description?.trim()) {
-      errors.push(`Row ${rowNum}: Missing description`);
+    
+    // Use rewritten_description first, or combine description + description_2
+    const description = row.rewritten_description?.trim() || 
+      row.description?.trim() || 
+      (row as any).description_1?.trim() || "";
+    
+    if (!description) {
+      errors.push(`Row ${rowNum}: Missing description (check "Rewritten Description" or "Description 1" column)`);
       return;
     }
     if (!row.address?.trim()) {
@@ -109,11 +162,14 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       return;
     }
 
+    // Use google_rating if tripadvisor_rating is not available
+    const rating = row.tripadvisor_rating || row.google_rating;
+
     valid.push({
       name: row.name.trim(),
       slug: generateSlug(row.name.trim()),
       category,
-      description: row.description.trim(),
+      description: description,
       address: row.address.trim(),
       town: row.town?.trim() || "grantham",
       phone: row.phone?.trim() || "",
@@ -122,8 +178,8 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       email: row.email?.trim() || "",
       image: row.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
       featured: parseBoolean(row.featured),
-      tripadvisor_rating: row.tripadvisor_rating ? parseFloat(String(row.tripadvisor_rating)) : undefined,
-      tripadvisor_url: row.tripadvisor_url?.trim() || "",
+      tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
+      tripadvisor_url: row.tripadvisor_url?.trim() || row.google_maps_url?.trim() || "",
       tags: parseTags(row.tags) as any,
     });
   });
@@ -145,7 +201,8 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
       return;
     }
 
-    const headers = data[0].map((h: any) => String(h).toLowerCase().trim().replace(/\s+/g, "_"));
+    // Normalize headers using our mapping
+    const headers = data[0].map((h: any) => normalizeHeader(String(h)));
     const rows: ParsedRow[] = data.slice(1).map((row) => {
       const obj: any = {};
       headers.forEach((header: string, i: number) => {
