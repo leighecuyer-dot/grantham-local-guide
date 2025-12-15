@@ -29,8 +29,12 @@ const AnimatedRoutes = () => {
         {/* Redirect root to default town */}
         <Route path="/" element={<Navigate to="/grantham" replace />} />
         
-        {/* Admin route (outside town context) */}
+        {/* Admin routes (outside town context) */}
         <Route path="/admin" element={<Admin />} />
+
+        {/* Redirect common mistaken admin URLs back to /admin */}
+        <Route path="/:town/admin/*" element={<Navigate to="/admin" replace />} />
+        <Route path="/:domain/:town/admin/*" element={<Navigate to="/admin" replace />} />
         
         {/* Town-based routes */}
         <Route path="/:town/*" element={
