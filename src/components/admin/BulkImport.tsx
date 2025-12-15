@@ -209,7 +209,35 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
   const [editForm, setEditForm] = useState<{ name: string; category: string; description: string; address: string }>({ name: "", category: "", description: "", address: "" });
   const [pasteData, setPasteData] = useState("");
   const [sheetsUrl, setSheetsUrl] = useState("");
+  const [allowIncomplete, setAllowIncomplete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const addSkippedToPreview = () => {
+    const newBusinesses: CreateBusinessInput[] = skippedRows.map((row) => {
+      const rating = row.originalData.tripadvisor_rating || row.originalData.google_rating;
+      const normalizedCategory = normalizeCategory(row.category) || "Services";
+      return {
+        name: row.name.trim() || "Unnamed Business",
+        slug: generateSlug(row.name.trim() || `business-${Date.now()}`),
+        category: normalizedCategory,
+        description: row.description.trim() || "No description provided",
+        address: row.address.trim() || "Address not provided",
+        town: row.originalData.town?.trim() || "grantham",
+        phone: row.originalData.phone?.trim() || "",
+        website: row.originalData.website?.trim() || "",
+        instagram: row.originalData.instagram?.trim() || "",
+        email: row.originalData.email?.trim() || "",
+        image: row.originalData.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+        featured: parseBoolean(row.originalData.featured),
+        tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
+        tripadvisor_url: row.originalData.tripadvisor_url?.trim() || row.originalData.google_maps_url?.trim() || "",
+        tags: parseTags(row.originalData.tags) as any,
+      };
+    });
+    setPreview([...preview, ...newBusinesses]);
+    setSkippedRows([]);
+    toast.success(`Added ${newBusinesses.length} incomplete rows with default values`);
+  };
 
   const startEditing = (index: number) => {
     const row = skippedRows[index];
@@ -549,14 +577,24 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
 
       {skippedRows.length > 0 && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
-          <button
-            onClick={() => setShowSkipped(!showSkipped)}
-            className="flex items-center gap-2 text-amber-600 dark:text-amber-400 w-full text-left"
-          >
-            {showSkipped ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-            <AlertTriangle className="w-4 h-4" />
-            <span className="font-medium">{skippedRows.length} rows skipped (click to edit & fix)</span>
-          </button>
+          <div className="flex items-center justify-between mb-2">
+            <button
+              onClick={() => setShowSkipped(!showSkipped)}
+              className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-left"
+            >
+              {showSkipped ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <AlertTriangle className="w-4 h-4" />
+              <span className="font-medium">{skippedRows.length} rows skipped (click to edit & fix)</span>
+            </button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={addSkippedToPreview}
+              className="h-7 text-xs border-amber-500/40 text-amber-600 hover:bg-amber-500/20"
+            >
+              Import All with Defaults
+            </Button>
+          </div>
           {showSkipped && (
             <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
               {skippedRows.map((row, i) => (
