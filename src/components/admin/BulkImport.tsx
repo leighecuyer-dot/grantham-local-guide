@@ -150,6 +150,11 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       (row as any).description_1?.trim() || "";
     const address = row.address?.trim() || "";
 
+    // Skip completely blank rows entirely
+    if (!name && !category && !description && !address) {
+      return;
+    }
+
     // Skip rows missing required fields (name, category, description, address)
     if (!name) {
       skippedRows.push({ rowNum, name, category, description, address, reason: "Missing name", originalData: row });
