@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, FileSpreadsheet, Link, ClipboardPaste, Download, AlertCircle, CheckCircle2, ChevronDown, ChevronRight, AlertTriangle } from "lucide-react";
+import { Upload, FileSpreadsheet, Link, ClipboardPaste, Download, AlertCircle, CheckCircle2, ChevronDown, ChevronRight, AlertTriangle, Pencil, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -128,8 +128,12 @@ const parseTags = (tags: string | undefined): string[] => {
 
 interface SkippedRow {
   rowNum: number;
-  name?: string;
+  name: string;
+  category: string;
+  description: string;
+  address: string;
   reason: string;
+  originalData: ParsedRow;
 }
 
 const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: string[]; skippedRows: SkippedRow[] } => {
@@ -139,35 +143,34 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
 
   rows.forEach((row, index) => {
     const rowNum = index + 2; // +2 for header row and 1-based index
-    const rowName = row.name?.trim() || undefined;
-
-    // Skip rows missing required fields (name, category, description, address)
-    if (!row.name?.trim()) {
-      skippedRows.push({ rowNum, name: rowName, reason: "Missing name" });
-      return;
-    }
-    if (!row.category?.trim()) {
-      skippedRows.push({ rowNum, name: rowName, reason: "Missing category" });
-      return;
-    }
-    
-    // Use rewritten_description first, or combine description + description_2
+    const name = row.name?.trim() || "";
+    const category = row.category?.trim() || "";
     const description = row.rewritten_description?.trim() || 
       row.description?.trim() || 
       (row as any).description_1?.trim() || "";
-    
-    if (!description) {
-      skippedRows.push({ rowNum, name: rowName, reason: "Missing description" });
+    const address = row.address?.trim() || "";
+
+    // Skip rows missing required fields (name, category, description, address)
+    if (!name) {
+      skippedRows.push({ rowNum, name, category, description, address, reason: "Missing name", originalData: row });
       return;
     }
-    if (!row.address?.trim()) {
-      skippedRows.push({ rowNum, name: rowName, reason: "Missing address" });
+    if (!category) {
+      skippedRows.push({ rowNum, name, category, description, address, reason: "Missing category", originalData: row });
+      return;
+    }
+    if (!description) {
+      skippedRows.push({ rowNum, name, category, description, address, reason: "Missing description", originalData: row });
+      return;
+    }
+    if (!address) {
+      skippedRows.push({ rowNum, name, category, description, address, reason: "Missing address", originalData: row });
       return;
     }
 
-    const category = normalizeCategory(row.category);
-    if (!category) {
-      skippedRows.push({ rowNum, name: rowName, reason: `Invalid category "${row.category}"` });
+    const normalizedCategory = normalizeCategory(category);
+    if (!normalizedCategory) {
+      skippedRows.push({ rowNum, name, category, description, address, reason: `Invalid category "${category}"`, originalData: row });
       return;
     }
 
@@ -175,11 +178,11 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
     const rating = row.tripadvisor_rating || row.google_rating;
 
     valid.push({
-      name: row.name.trim(),
-      slug: generateSlug(row.name.trim()),
-      category,
+      name: name,
+      slug: generateSlug(name),
+      category: normalizedCategory,
       description: description,
-      address: row.address.trim(),
+      address: address,
       town: row.town?.trim() || "grantham",
       phone: row.phone?.trim() || "",
       website: row.website?.trim() || "",
@@ -202,9 +205,71 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
   const [errors, setErrors] = useState<string[]>([]);
   const [skippedRows, setSkippedRows] = useState<SkippedRow[]>([]);
   const [showSkipped, setShowSkipped] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editForm, setEditForm] = useState<{ name: string; category: string; description: string; address: string }>({ name: "", category: "", description: "", address: "" });
   const [pasteData, setPasteData] = useState("");
   const [sheetsUrl, setSheetsUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const startEditing = (index: number) => {
+    const row = skippedRows[index];
+    setEditForm({
+      name: row.name,
+      category: row.category,
+      description: row.description,
+      address: row.address,
+    });
+    setEditingIndex(index);
+  };
+
+  const cancelEditing = () => {
+    setEditingIndex(null);
+    setEditForm({ name: "", category: "", description: "", address: "" });
+  };
+
+  const saveAndMoveToPreview = (index: number) => {
+    const row = skippedRows[index];
+    const { name, category, description, address } = editForm;
+
+    // Validate
+    if (!name.trim() || !category.trim() || !description.trim() || !address.trim()) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    const normalizedCategory = normalizeCategory(category);
+    if (!normalizedCategory) {
+      toast.error(`Invalid category "${category}". Valid: ${CATEGORIES.join(", ")}`);
+      return;
+    }
+
+    // Create the business entry
+    const rating = row.originalData.tripadvisor_rating || row.originalData.google_rating;
+    const newBusiness: CreateBusinessInput = {
+      name: name.trim(),
+      slug: generateSlug(name.trim()),
+      category: normalizedCategory,
+      description: description.trim(),
+      address: address.trim(),
+      town: row.originalData.town?.trim() || "grantham",
+      phone: row.originalData.phone?.trim() || "",
+      website: row.originalData.website?.trim() || "",
+      instagram: row.originalData.instagram?.trim() || "",
+      email: row.originalData.email?.trim() || "",
+      image: row.originalData.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+      featured: parseBoolean(row.originalData.featured),
+      tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
+      tripadvisor_url: row.originalData.tripadvisor_url?.trim() || row.originalData.google_maps_url?.trim() || "",
+      tags: parseTags(row.originalData.tags) as any,
+    };
+
+    // Add to preview and remove from skipped
+    setPreview([...preview, newBusiness]);
+    setSkippedRows(skippedRows.filter((_, i) => i !== index));
+    setEditingIndex(null);
+    setEditForm({ name: "", category: "", description: "", address: "" });
+    toast.success(`"${name}" moved to import list`);
+  };
 
   const processSpreadsheetData = (data: any[][]) => {
     if (data.length < 2) {
@@ -490,28 +555,86 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
           >
             {showSkipped ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             <AlertTriangle className="w-4 h-4" />
-            <span className="font-medium">{skippedRows.length} rows skipped (incomplete data)</span>
+            <span className="font-medium">{skippedRows.length} rows skipped (click to edit & fix)</span>
           </button>
           {showSkipped && (
-            <div className="mt-3 bg-background/50 rounded-md overflow-hidden max-h-48 overflow-y-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50 sticky top-0">
-                  <tr>
-                    <th className="text-left px-3 py-2 text-muted-foreground">Row</th>
-                    <th className="text-left px-3 py-2 text-muted-foreground">Name</th>
-                    <th className="text-left px-3 py-2 text-muted-foreground">Reason</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {skippedRows.map((row, i) => (
-                    <tr key={i}>
-                      <td className="px-3 py-2 text-muted-foreground">{row.rowNum}</td>
-                      <td className="px-3 py-2">{row.name || <span className="text-muted-foreground italic">—</span>}</td>
-                      <td className="px-3 py-2 text-amber-600 dark:text-amber-400">{row.reason}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-3 space-y-2 max-h-64 overflow-y-auto">
+              {skippedRows.map((row, i) => (
+                <div key={i} className="bg-background rounded-md p-3 border border-border">
+                  {editingIndex === i ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Row {row.rowNum} - Editing</span>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="ghost" onClick={cancelEditing} className="h-7 px-2">
+                            <X className="w-3 h-3" />
+                          </Button>
+                          <Button size="sm" onClick={() => saveAndMoveToPreview(i)} className="h-7 px-2">
+                            <Check className="w-3 h-3 mr-1" />
+                            Save & Add
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <Label className="text-xs">Name *</Label>
+                          <Input
+                            value={editForm.name}
+                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                            className="h-8 text-sm"
+                            placeholder="Business name"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Category *</Label>
+                          <select
+                            value={editForm.category}
+                            onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                            className="w-full h-8 text-sm rounded-md border border-input bg-background px-2"
+                          >
+                            <option value="">Select category</option>
+                            {CATEGORIES.map((cat) => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="col-span-2">
+                          <Label className="text-xs">Address *</Label>
+                          <Input
+                            value={editForm.address}
+                            onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                            className="h-8 text-sm"
+                            placeholder="Full address"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <Label className="text-xs">Description *</Label>
+                          <Textarea
+                            value={editForm.description}
+                            onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                            className="text-sm min-h-[60px]"
+                            placeholder="Business description"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">Row {row.rowNum}</span>
+                          <span className="font-medium truncate">{row.name || <span className="text-muted-foreground italic">No name</span>}</span>
+                        </div>
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">{row.reason}</p>
+                      </div>
+                      <Button size="sm" variant="outline" onClick={() => startEditing(i)} className="h-7 px-2 ml-2">
+                        <Pencil className="w-3 h-3 mr-1" />
+                        Fix
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
