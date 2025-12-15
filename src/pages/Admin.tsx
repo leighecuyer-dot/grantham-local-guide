@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useAuth, useIsAdmin } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { useBusinesses, useCreateBusiness, useUpdateBusiness, useDeleteBusiness, CreateBusinessInput } from "@/hooks/useBusinesses";
 import { CATEGORIES, BUSINESS_TAGS, Category, BusinessTag } from "@/types/business";
 import { TOWNS } from "@/contexts/TownContext";
@@ -372,8 +373,29 @@ const Admin = () => {
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
 
   const handleBulkImport = async (businesses: CreateBusinessInput[]) => {
+    // Fetch existing slugs to avoid duplicates
+    const { data: existing } = await supabase.from("businesses").select("slug");
+    const existingSlugs = new Set((existing || []).map((b: any) => b.slug));
+    
+    let imported = 0;
+    let skipped = 0;
+    
     for (const business of businesses) {
-      await createBusiness.mutateAsync(business);
+      if (existingSlugs.has(business.slug)) {
+        skipped++;
+        continue; // Skip duplicates
+      }
+      try {
+        await createBusiness.mutateAsync(business);
+        existingSlugs.add(business.slug); // Track newly added
+        imported++;
+      } catch (error) {
+        skipped++;
+      }
+    }
+    
+    if (skipped > 0) {
+      toast.info(`Imported ${imported}, skipped ${skipped} duplicates`);
     }
   };
 
