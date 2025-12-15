@@ -126,6 +126,64 @@ const parseTags = (tags: string | undefined): string[] => {
     .filter(Boolean);
 };
 
+// Input sanitization helpers
+const MAX_LENGTHS = {
+  name: 200,
+  description: 2000,
+  address: 300,
+  phone: 30,
+  email: 255,
+  url: 500,
+};
+
+const truncateString = (str: string, maxLength: number): string => {
+  if (!str) return "";
+  return str.length > maxLength ? str.slice(0, maxLength) : str;
+};
+
+const stripHtmlTags = (str: string): string => {
+  if (!str) return "";
+  return str.replace(/<[^>]*>/g, "").replace(/&[^;]+;/g, " ").trim();
+};
+
+const isValidUrl = (url: string): boolean => {
+  if (!url) return true;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidEmail = (email: string): boolean => {
+  if (!email) return true;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const sanitizeUrl = (url: string): string => {
+  const trimmed = url?.trim() || "";
+  if (!trimmed) return "";
+  if (!isValidUrl(trimmed)) return "";
+  return truncateString(trimmed, MAX_LENGTHS.url);
+};
+
+const sanitizeEmail = (email: string): string => {
+  const trimmed = email?.trim()?.toLowerCase() || "";
+  if (!trimmed) return "";
+  if (!isValidEmail(trimmed)) return "";
+  return truncateString(trimmed, MAX_LENGTHS.email);
+};
+
+const sanitizePhone = (phone: string): string => {
+  const trimmed = phone?.trim() || "";
+  if (!trimmed) return "";
+  // Only allow digits, spaces, dashes, plus, and parentheses
+  const cleaned = trimmed.replace(/[^\d\s\-+()]/g, "");
+  return truncateString(cleaned, MAX_LENGTHS.phone);
+};
+
 interface SkippedRow {
   rowNum: number;
   name: string;
@@ -143,12 +201,14 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
 
   rows.forEach((row, index) => {
     const rowNum = index + 2; // +2 for header row and 1-based index
-    const name = row.name?.trim() || "";
+    // Sanitize text inputs - strip HTML and enforce length limits
+    const name = truncateString(stripHtmlTags(row.name || ""), MAX_LENGTHS.name);
     const category = row.category?.trim() || "";
-    const description = row.rewritten_description?.trim() || 
+    const rawDescription = row.rewritten_description?.trim() || 
       row.description?.trim() || 
       (row as any).description_1?.trim() || "";
-    const address = row.address?.trim() || "";
+    const description = truncateString(stripHtmlTags(rawDescription), MAX_LENGTHS.description);
+    const address = truncateString(stripHtmlTags(row.address || ""), MAX_LENGTHS.address);
 
     // Skip completely blank rows or rows without a name entirely
     if (!name && !category && !description && !address) {
@@ -176,8 +236,18 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       return;
     }
 
+    // Validate and sanitize URLs and email
+    const website = sanitizeUrl(row.website || "");
+    const instagram = sanitizeUrl(row.instagram || "");
+    const email = sanitizeEmail(row.email || "");
+    const image = sanitizeUrl(row.image || "") || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800";
+    const tripadvisorUrl = sanitizeUrl(row.tripadvisor_url || "") || sanitizeUrl(row.google_maps_url || "");
+    const phone = sanitizePhone(row.phone || "");
+
     // Use google_rating if tripadvisor_rating is not available
     const rating = row.tripadvisor_rating || row.google_rating;
+    const parsedRating = rating ? parseFloat(String(rating)) : undefined;
+    const sanitizedRating = parsedRating && !isNaN(parsedRating) && parsedRating >= 0 && parsedRating <= 5 ? parsedRating : undefined;
 
     valid.push({
       name: name,
@@ -185,15 +255,15 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       category: normalizedCategory,
       description: description,
       address: address,
-      town: row.town?.trim() || "grantham",
-      phone: row.phone?.trim() || "",
-      website: row.website?.trim() || "",
-      instagram: row.instagram?.trim() || "",
-      email: row.email?.trim() || "",
-      image: row.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+      town: truncateString(row.town?.trim() || "grantham", 50),
+      phone: phone,
+      website: website,
+      instagram: instagram,
+      email: email,
+      image: image,
       featured: parseBoolean(row.featured),
-      tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
-      tripadvisor_url: row.tripadvisor_url?.trim() || row.google_maps_url?.trim() || "",
+      tripadvisor_rating: sanitizedRating,
+      tripadvisor_url: tripadvisorUrl,
       tags: parseTags(row.tags) as any,
     });
   });
@@ -217,22 +287,24 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
   const addSkippedToPreview = () => {
     const newBusinesses: CreateBusinessInput[] = skippedRows.map((row) => {
       const rating = row.originalData.tripadvisor_rating || row.originalData.google_rating;
+      const parsedRating = rating ? parseFloat(String(rating)) : undefined;
+      const sanitizedRating = parsedRating && !isNaN(parsedRating) && parsedRating >= 0 && parsedRating <= 5 ? parsedRating : undefined;
       const normalizedCategory = normalizeCategory(row.category) || "Services";
       return {
-        name: row.name.trim() || "Unnamed Business",
+        name: truncateString(stripHtmlTags(row.name || "Unnamed Business"), MAX_LENGTHS.name),
         slug: generateSlug(row.name.trim() || `business-${Date.now()}`),
         category: normalizedCategory,
-        description: row.description.trim() || "No description provided",
-        address: row.address.trim() || "Address not provided",
-        town: row.originalData.town?.trim() || "grantham",
-        phone: row.originalData.phone?.trim() || "",
-        website: row.originalData.website?.trim() || "",
-        instagram: row.originalData.instagram?.trim() || "",
-        email: row.originalData.email?.trim() || "",
-        image: row.originalData.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+        description: truncateString(stripHtmlTags(row.description || "No description provided"), MAX_LENGTHS.description),
+        address: truncateString(stripHtmlTags(row.address || "Address not provided"), MAX_LENGTHS.address),
+        town: truncateString(row.originalData.town?.trim() || "grantham", 50),
+        phone: sanitizePhone(row.originalData.phone || ""),
+        website: sanitizeUrl(row.originalData.website || ""),
+        instagram: sanitizeUrl(row.originalData.instagram || ""),
+        email: sanitizeEmail(row.originalData.email || ""),
+        image: sanitizeUrl(row.originalData.image || "") || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
         featured: parseBoolean(row.originalData.featured),
-        tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
-        tripadvisor_url: row.originalData.tripadvisor_url?.trim() || row.originalData.google_maps_url?.trim() || "",
+        tripadvisor_rating: sanitizedRating,
+        tripadvisor_url: sanitizeUrl(row.originalData.tripadvisor_url || "") || sanitizeUrl(row.originalData.google_maps_url || ""),
         tags: parseTags(row.originalData.tags) as any,
       };
     });
@@ -273,23 +345,25 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
       return;
     }
 
-    // Create the business entry
+    // Create the business entry with sanitization
     const rating = row.originalData.tripadvisor_rating || row.originalData.google_rating;
+    const parsedRating = rating ? parseFloat(String(rating)) : undefined;
+    const sanitizedRating = parsedRating && !isNaN(parsedRating) && parsedRating >= 0 && parsedRating <= 5 ? parsedRating : undefined;
     const newBusiness: CreateBusinessInput = {
-      name: name.trim(),
+      name: truncateString(stripHtmlTags(name), MAX_LENGTHS.name),
       slug: generateSlug(name.trim()),
       category: normalizedCategory,
-      description: description.trim(),
-      address: address.trim(),
-      town: row.originalData.town?.trim() || "grantham",
-      phone: row.originalData.phone?.trim() || "",
-      website: row.originalData.website?.trim() || "",
-      instagram: row.originalData.instagram?.trim() || "",
-      email: row.originalData.email?.trim() || "",
-      image: row.originalData.image?.trim() || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
+      description: truncateString(stripHtmlTags(description), MAX_LENGTHS.description),
+      address: truncateString(stripHtmlTags(address), MAX_LENGTHS.address),
+      town: truncateString(row.originalData.town?.trim() || "grantham", 50),
+      phone: sanitizePhone(row.originalData.phone || ""),
+      website: sanitizeUrl(row.originalData.website || ""),
+      instagram: sanitizeUrl(row.originalData.instagram || ""),
+      email: sanitizeEmail(row.originalData.email || ""),
+      image: sanitizeUrl(row.originalData.image || "") || "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
       featured: parseBoolean(row.originalData.featured),
-      tripadvisor_rating: rating ? parseFloat(String(rating)) : undefined,
-      tripadvisor_url: row.originalData.tripadvisor_url?.trim() || row.originalData.google_maps_url?.trim() || "",
+      tripadvisor_rating: sanitizedRating,
+      tripadvisor_url: sanitizeUrl(row.originalData.tripadvisor_url || "") || sanitizeUrl(row.originalData.google_maps_url || ""),
       tags: parseTags(row.originalData.tags) as any,
     };
 
