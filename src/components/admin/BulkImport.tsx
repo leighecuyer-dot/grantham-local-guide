@@ -126,19 +126,15 @@ const parseTags = (tags: string | undefined): string[] => {
     .filter(Boolean);
 };
 
-const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: string[] } => {
+const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: string[]; skipped: number } => {
   const valid: CreateBusinessInput[] = [];
   const errors: string[] = [];
+  let skipped = 0;
 
-  rows.forEach((row, index) => {
-    const rowNum = index + 2; // +2 for header row and 1-based index
-
-    if (!row.name?.trim()) {
-      errors.push(`Row ${rowNum}: Missing name`);
-      return;
-    }
-    if (!row.category?.trim()) {
-      errors.push(`Row ${rowNum}: Missing category`);
+  rows.forEach((row) => {
+    // Skip rows missing required fields (name, category, description, address)
+    if (!row.name?.trim() || !row.category?.trim()) {
+      skipped++;
       return;
     }
     
@@ -147,18 +143,15 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       row.description?.trim() || 
       (row as any).description_1?.trim() || "";
     
-    if (!description) {
-      errors.push(`Row ${rowNum}: Missing description (check "Rewritten Description" or "Description 1" column)`);
-      return;
-    }
-    if (!row.address?.trim()) {
-      errors.push(`Row ${rowNum}: Missing address`);
+    if (!description || !row.address?.trim()) {
+      skipped++;
       return;
     }
 
     const category = normalizeCategory(row.category);
     if (!category) {
-      errors.push(`Row ${rowNum}: Invalid category "${row.category}". Valid: ${CATEGORIES.join(", ")}`);
+      // Only show error for invalid categories (not missing data)
+      skipped++;
       return;
     }
 
@@ -184,7 +177,7 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
     });
   });
 
-  return { valid, errors };
+  return { valid, errors, skipped };
 };
 
 export const BulkImport = ({ onImport }: BulkImportProps) => {
@@ -211,12 +204,15 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
       return obj;
     });
 
-    const { valid, errors: parseErrors } = parseRows(rows);
+    const { valid, errors: parseErrors, skipped } = parseRows(rows);
     setErrors(parseErrors);
     setPreview(valid);
 
     if (valid.length > 0) {
-      toast.success(`Parsed ${valid.length} businesses ready to import`);
+      const skippedMsg = skipped > 0 ? ` (${skipped} incomplete rows skipped)` : "";
+      toast.success(`Parsed ${valid.length} businesses ready to import${skippedMsg}`);
+    } else if (skipped > 0) {
+      toast.warning(`All ${skipped} rows were incomplete and skipped`);
     }
     if (parseErrors.length > 0) {
       toast.warning(`${parseErrors.length} rows have errors`);
