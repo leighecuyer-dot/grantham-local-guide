@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, FileSpreadsheet, Link, ClipboardPaste, Download, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Upload, FileSpreadsheet, Link, ClipboardPaste, Download, AlertCircle, CheckCircle2, ChevronDown, ChevronRight, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,15 +126,28 @@ const parseTags = (tags: string | undefined): string[] => {
     .filter(Boolean);
 };
 
-const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: string[]; skipped: number } => {
+interface SkippedRow {
+  rowNum: number;
+  name?: string;
+  reason: string;
+}
+
+const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: string[]; skippedRows: SkippedRow[] } => {
   const valid: CreateBusinessInput[] = [];
   const errors: string[] = [];
-  let skipped = 0;
+  const skippedRows: SkippedRow[] = [];
 
-  rows.forEach((row) => {
+  rows.forEach((row, index) => {
+    const rowNum = index + 2; // +2 for header row and 1-based index
+    const rowName = row.name?.trim() || undefined;
+
     // Skip rows missing required fields (name, category, description, address)
-    if (!row.name?.trim() || !row.category?.trim()) {
-      skipped++;
+    if (!row.name?.trim()) {
+      skippedRows.push({ rowNum, name: rowName, reason: "Missing name" });
+      return;
+    }
+    if (!row.category?.trim()) {
+      skippedRows.push({ rowNum, name: rowName, reason: "Missing category" });
       return;
     }
     
@@ -143,15 +156,18 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
       row.description?.trim() || 
       (row as any).description_1?.trim() || "";
     
-    if (!description || !row.address?.trim()) {
-      skipped++;
+    if (!description) {
+      skippedRows.push({ rowNum, name: rowName, reason: "Missing description" });
+      return;
+    }
+    if (!row.address?.trim()) {
+      skippedRows.push({ rowNum, name: rowName, reason: "Missing address" });
       return;
     }
 
     const category = normalizeCategory(row.category);
     if (!category) {
-      // Only show error for invalid categories (not missing data)
-      skipped++;
+      skippedRows.push({ rowNum, name: rowName, reason: `Invalid category "${row.category}"` });
       return;
     }
 
@@ -177,13 +193,15 @@ const parseRows = (rows: ParsedRow[]): { valid: CreateBusinessInput[]; errors: s
     });
   });
 
-  return { valid, errors, skipped };
+  return { valid, errors, skippedRows };
 };
 
 export const BulkImport = ({ onImport }: BulkImportProps) => {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<CreateBusinessInput[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
+  const [skippedRows, setSkippedRows] = useState<SkippedRow[]>([]);
+  const [showSkipped, setShowSkipped] = useState(false);
   const [pasteData, setPasteData] = useState("");
   const [sheetsUrl, setSheetsUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -204,15 +222,16 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
       return obj;
     });
 
-    const { valid, errors: parseErrors, skipped } = parseRows(rows);
+    const { valid, errors: parseErrors, skippedRows: skipped } = parseRows(rows);
     setErrors(parseErrors);
     setPreview(valid);
+    setSkippedRows(skipped);
 
     if (valid.length > 0) {
-      const skippedMsg = skipped > 0 ? ` (${skipped} incomplete rows skipped)` : "";
+      const skippedMsg = skipped.length > 0 ? ` (${skipped.length} incomplete rows skipped)` : "";
       toast.success(`Parsed ${valid.length} businesses ready to import${skippedMsg}`);
-    } else if (skipped > 0) {
-      toast.warning(`All ${skipped} rows were incomplete and skipped`);
+    } else if (skipped.length > 0) {
+      toast.warning(`All ${skipped.length} rows were incomplete and skipped`);
     }
     if (parseErrors.length > 0) {
       toast.warning(`${parseErrors.length} rows have errors`);
@@ -226,6 +245,7 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
     setLoading(true);
     setErrors([]);
     setPreview([]);
+    setSkippedRows([]);
 
     try {
       const buffer = await file.arrayBuffer();
@@ -252,6 +272,7 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
     setLoading(true);
     setErrors([]);
     setPreview([]);
+    setSkippedRows([]);
 
     try {
       const lines = pasteData.trim().split("\n");
@@ -284,6 +305,7 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
     setLoading(true);
     setErrors([]);
     setPreview([]);
+    setSkippedRows([]);
 
     try {
       const response = await fetch(csvUrl);
@@ -315,6 +337,7 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
     try {
       await onImport(preview);
       setPreview([]);
+      setSkippedRows([]);
       setPasteData("");
       setSheetsUrl("");
       toast.success(`Successfully imported ${preview.length} businesses!`);
@@ -456,6 +479,41 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
               <li key={i}>• {err}</li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {skippedRows.length > 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
+          <button
+            onClick={() => setShowSkipped(!showSkipped)}
+            className="flex items-center gap-2 text-amber-600 dark:text-amber-400 w-full text-left"
+          >
+            {showSkipped ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            <AlertTriangle className="w-4 h-4" />
+            <span className="font-medium">{skippedRows.length} rows skipped (incomplete data)</span>
+          </button>
+          {showSkipped && (
+            <div className="mt-3 bg-background/50 rounded-md overflow-hidden max-h-48 overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50 sticky top-0">
+                  <tr>
+                    <th className="text-left px-3 py-2 text-muted-foreground">Row</th>
+                    <th className="text-left px-3 py-2 text-muted-foreground">Name</th>
+                    <th className="text-left px-3 py-2 text-muted-foreground">Reason</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {skippedRows.map((row, i) => (
+                    <tr key={i}>
+                      <td className="px-3 py-2 text-muted-foreground">{row.rowNum}</td>
+                      <td className="px-3 py-2">{row.name || <span className="text-muted-foreground italic">—</span>}</td>
+                      <td className="px-3 py-2 text-amber-600 dark:text-amber-400">{row.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
