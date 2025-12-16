@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Check, Star, Zap, Crown, ArrowRight, Loader2, ChevronDown } from "lucide-react";
+import { Check, Star, Zap, Crown, ArrowRight, Loader2, ChevronDown, Globe, Palette, Smartphone, Search, Rocket } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTown } from "@/contexts/TownContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -430,6 +430,75 @@ const Advertise = () => {
                 provider, Stripe.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Website Building Service Section */}
+      <section className="py-20 bg-gradient-to-b from-primary/5 via-background to-background border-t border-primary/20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-6">
+              <Globe className="w-4 h-4 mr-2 inline" />
+              Website Building Service
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">
+              Need a Professional Website for Your Business?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              We build beautiful, modern websites for small businesses in {town.name}. 
+              From simple landing pages to full e-commerce stores — we've got you covered.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
+            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
+              <Palette className="w-10 h-10 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Custom Design</h3>
+              <p className="text-sm text-muted-foreground">Unique designs tailored to your brand identity</p>
+            </Card>
+            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
+              <Smartphone className="w-10 h-10 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Mobile Friendly</h3>
+              <p className="text-sm text-muted-foreground">Looks great on all devices and screen sizes</p>
+            </Card>
+            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
+              <Search className="w-10 h-10 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">SEO Optimised</h3>
+              <p className="text-sm text-muted-foreground">Built to rank well on Google search results</p>
+            </Card>
+            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
+              <Rocket className="w-10 h-10 text-primary mx-auto mb-4" />
+              <h3 className="font-semibold text-foreground mb-2">Fast & Secure</h3>
+              <p className="text-sm text-muted-foreground">Lightning fast loading with SSL security</p>
+            </Card>
+          </div>
+
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-primary/30 bg-card/50 backdrop-blur">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-display font-bold text-foreground mb-4">
+                  Websites Starting From £299
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Get a professional website up and running in as little as 2 weeks. 
+                  Includes domain setup, hosting for the first year, and basic SEO.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Link to={`/${townSlug}/contact`}>
+                    <Button size="lg" className="w-full sm:w-auto">
+                      Get a Free Quote
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                  <a href="mailto:hello@discover-local.uk?subject=Website%20Building%20Enquiry">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                      Email Us
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
