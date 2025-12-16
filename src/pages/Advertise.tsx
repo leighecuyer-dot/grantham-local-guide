@@ -491,11 +491,11 @@ const Advertise = () => {
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
-                  <a href="mailto:hello@discover-local.uk?subject=Website%20Building%20Enquiry">
+                  <Link to={`/${townSlug}/portfolio`}>
                     <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                      Email Us
+                      View Our Work
                     </Button>
-                  </a>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
