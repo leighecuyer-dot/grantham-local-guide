@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Check, Star, Zap, Crown, ArrowRight, Loader2, ChevronDown, Globe, Palette, Smartphone, Search, Rocket } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Check, Star, Zap, Crown, ArrowRight, Loader2, ChevronDown, Globe, Palette, Smartphone, Search, Rocket, Store, Code } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTown } from "@/contexts/TownContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -191,327 +192,540 @@ const Advertise = () => {
               Grow Your Business in {town.name}
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Get discovered by thousands of local customers actively searching for businesses like yours. 
-              Choose a plan that fits your needs.
+              Whether you need more visibility in our local directory or a professional website — we've got you covered.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Current Subscription Status */}
-      {user && currentTier !== "free" && (
-        <section className="py-6 bg-primary/5 border-y border-primary/20">
-          <div className="container mx-auto px-4 text-center">
-            <div className="flex items-center justify-center gap-4 flex-wrap">
-              <Badge variant="outline" className="text-primary border-primary px-4 py-2 text-base">
-                Current Plan: {SUBSCRIPTION_TIERS[currentTier].name}
-              </Badge>
-              <Button
-                variant="outline"
-                onClick={handleManageSubscription}
-                disabled={loading === "manage"}
-              >
-                {loading === "manage" ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
-                  </>
-                ) : (
-                  "Manage Subscription"
-                )}
-              </Button>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Founder Pricing Header */}
-      <section className="py-8 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-primary/20">
-        <div className="container mx-auto px-4 text-center">
-          <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-4">
-            ⚡ Founder Pricing – Limited Time
-          </Badge>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-4">
-            Be an early adopter and lock in these discounted rates for 6 months. 
-            After launch, prices will increase — but your rate stays the same.
-          </p>
-          <Collapsible>
-            <CollapsibleTrigger className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-              Learn more about Founder Pricing
-              <ChevronDown className="w-4 h-4" />
-            </CollapsibleTrigger>
-            <CollapsibleContent className="mt-4 text-left max-w-xl mx-auto">
-              <div className="bg-card border border-border rounded-lg p-4 text-sm text-muted-foreground space-y-2">
-                <p><strong className="text-foreground">How it works:</strong> Sign up during our launch period and your monthly rate is guaranteed for 6 months from your subscription start date.</p>
-                <p><strong className="text-foreground">After 6 months:</strong> Your plan will continue at the then-current rate, which you can cancel anytime before renewal.</p>
-                <p><strong className="text-foreground">No lock-in:</strong> Cancel anytime. Your benefits continue until the end of your billing period.</p>
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-16 bg-background">
+      {/* Tabs Section */}
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {tiers.map((tier) => {
-              const Icon = tier.icon;
-              const isCurrentPlan = currentTier === tier.key;
+          <Tabs defaultValue="directory" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-12 h-14">
+              <TabsTrigger value="directory" className="text-base gap-2 h-12">
+                <Store className="w-5 h-5" />
+                Directory Listing
+              </TabsTrigger>
+              <TabsTrigger value="website" className="text-base gap-2 h-12">
+                <Code className="w-5 h-5" />
+                Website Building
+              </TabsTrigger>
+            </TabsList>
 
-              return (
-                <Card
-                  key={tier.key}
-                  className={`relative flex flex-col transition-all duration-300 hover:scale-105 ${
-                    tier.highlighted
-                      ? "border-primary shadow-lg shadow-primary/20 scale-105"
-                      : "border-border"
-                  } ${isCurrentPlan ? "ring-2 ring-primary" : ""}`}
-                >
-                  {tier.highlighted && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-sm font-medium rounded-full">
-                      Most Popular
-                    </div>
-                  )}
-                  {isCurrentPlan && (
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-primary/20 text-primary text-xs font-medium rounded">
-                      Your Plan
-                    </div>
-                  )}
-                  <CardHeader className="text-center pb-4">
-                    <div className={`w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-4 ${
-                      tier.highlighted ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
-                    }`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <CardTitle className="text-2xl">{tier.name}</CardTitle>
-                    <CardDescription>
-                      {tier.key === "free"
-                        ? "Get your business discovered"
-                        : tier.key === "featured"
-                        ? "Stand out in your category"
-                        : "Maximum visibility & AI tools"}
-                    </CardDescription>
-                    <div className="mt-4">
-                      <span className="text-4xl font-bold text-foreground">£{tier.price}</span>
-                      {tier.price > 0 && (
-                        <span className="text-muted-foreground">/month</span>
-                      )}
-                      {tier.price === 0 && (
-                        <span className="text-muted-foreground">/forever</span>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <ul className="space-y-3">
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                          <span className="text-muted-foreground">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
-                    {tier.key === "free" ? (
-                      <Link to={`/${townSlug}/add-listing`} className="w-full">
-                        <Button variant="outline" className="w-full">
-                          {isCurrentPlan ? "Current Plan" : "Get Started Free"}
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </Link>
-                    ) : isCurrentPlan ? (
-                      <Button variant="outline" className="w-full" disabled>
-                        Current Plan
-                      </Button>
-                    ) : (
+            {/* Directory Listing Tab */}
+            <TabsContent value="directory" className="space-y-0">
+              {/* Current Subscription Status */}
+              {user && currentTier !== "free" && (
+                <div className="py-6 bg-primary/5 border-y border-primary/20 -mx-4 px-4 mb-12">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-4 flex-wrap">
+                      <Badge variant="outline" className="text-primary border-primary px-4 py-2 text-base">
+                        Current Plan: {SUBSCRIPTION_TIERS[currentTier].name}
+                      </Badge>
                       <Button
-                        variant={tier.highlighted ? "default" : "outline"}
-                        className="w-full"
-                        onClick={() => handleSubscribe(tier.key)}
-                        disabled={loading === tier.key || checkingSubscription}
+                        variant="outline"
+                        onClick={handleManageSubscription}
+                        disabled={loading === "manage"}
                       >
-                        {loading === tier.key ? (
+                        {loading === "manage" ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             Loading...
                           </>
                         ) : (
-                          <>
-                            Subscribe to {tier.name}
-                            <ArrowRight className="w-4 h-4 ml-2" />
-                          </>
+                          "Manage Subscription"
                         )}
                       </Button>
-                    )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Founder Pricing Header */}
+              <div className="py-8 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-primary/20 -mx-4 px-4 mb-12 rounded-lg">
+                <div className="text-center">
+                  <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-4">
+                    ⚡ Founder Pricing – Limited Time
+                  </Badge>
+                  <p className="text-muted-foreground max-w-xl mx-auto mb-4">
+                    Be an early adopter and lock in these discounted rates for 6 months. 
+                    After launch, prices will increase — but your rate stays the same.
+                  </p>
+                  <Collapsible>
+                    <CollapsibleTrigger className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+                      Learn more about Founder Pricing
+                      <ChevronDown className="w-4 h-4" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="mt-4 text-left max-w-xl mx-auto">
+                      <div className="bg-card border border-border rounded-lg p-4 text-sm text-muted-foreground space-y-2">
+                        <p><strong className="text-foreground">How it works:</strong> Sign up during our launch period and your monthly rate is guaranteed for 6 months from your subscription start date.</p>
+                        <p><strong className="text-foreground">After 6 months:</strong> Your plan will continue at the then-current rate, which you can cancel anytime before renewal.</p>
+                        <p><strong className="text-foreground">No lock-in:</strong> Cancel anytime. Your benefits continue until the end of your billing period.</p>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+              </div>
+
+              {/* Pricing Cards */}
+              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+                {tiers.map((tier) => {
+                  const Icon = tier.icon;
+                  const isCurrentPlan = currentTier === tier.key;
+
+                  return (
+                    <Card
+                      key={tier.key}
+                      className={`relative flex flex-col transition-all duration-300 hover:scale-105 ${
+                        tier.highlighted
+                          ? "border-primary shadow-lg shadow-primary/20 scale-105"
+                          : "border-border"
+                      } ${isCurrentPlan ? "ring-2 ring-primary" : ""}`}
+                    >
+                      {tier.highlighted && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-sm font-medium rounded-full">
+                          Most Popular
+                        </div>
+                      )}
+                      {isCurrentPlan && (
+                        <div className="absolute top-2 right-2 px-2 py-1 bg-primary/20 text-primary text-xs font-medium rounded">
+                          Your Plan
+                        </div>
+                      )}
+                      <CardHeader className="text-center pb-4">
+                        <div className={`w-12 h-12 mx-auto rounded-xl flex items-center justify-center mb-4 ${
+                          tier.highlighted ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+                        }`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <CardTitle className="text-2xl">{tier.name}</CardTitle>
+                        <CardDescription>
+                          {tier.key === "free"
+                            ? "Get your business discovered"
+                            : tier.key === "featured"
+                            ? "Stand out in your category"
+                            : "Maximum visibility & AI tools"}
+                        </CardDescription>
+                        <div className="mt-4">
+                          <span className="text-4xl font-bold text-foreground">£{tier.price}</span>
+                          {tier.price > 0 && (
+                            <span className="text-muted-foreground">/month</span>
+                          )}
+                          {tier.price === 0 && (
+                            <span className="text-muted-foreground">/forever</span>
+                          )}
+                        </div>
+                      </CardHeader>
+                      <CardContent className="flex-1">
+                        <ul className="space-y-3">
+                          {tier.features.map((feature) => (
+                            <li key={feature} className="flex items-start gap-3">
+                              <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                      <CardFooter>
+                        {tier.key === "free" ? (
+                          <Link to={`/${townSlug}/add-listing`} className="w-full">
+                            <Button variant="outline" className="w-full">
+                              {isCurrentPlan ? "Current Plan" : "Get Started Free"}
+                              <ArrowRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </Link>
+                        ) : isCurrentPlan ? (
+                          <Button variant="outline" className="w-full" disabled>
+                            Current Plan
+                          </Button>
+                        ) : (
+                          <Button
+                            variant={tier.highlighted ? "default" : "outline"}
+                            className="w-full"
+                            onClick={() => handleSubscribe(tier.key)}
+                            disabled={loading === tier.key || checkingSubscription}
+                          >
+                            {loading === tier.key ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Loading...
+                              </>
+                            ) : (
+                              <>
+                                Subscribe to {tier.name}
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </>
+                            )}
+                          </Button>
+                        )}
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {/* Not logged in notice */}
+              {!user && (
+                <div className="py-8 bg-muted/50 rounded-lg mb-12">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">
+                      Please{" "}
+                      <Link to="/admin" className="text-primary underline hover:no-underline">
+                        login or create an account
+                      </Link>{" "}
+                      to subscribe to a premium plan.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Benefits Section */}
+              <div className="py-16 bg-muted/30 -mx-4 px-4 rounded-lg mb-12">
+                <div className="max-w-3xl mx-auto text-center mb-12">
+                  <h2 className="text-3xl font-display font-bold text-foreground mb-4">
+                    Why Advertise With Us?
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Join hundreds of local businesses already growing with Discover Local
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-2">10K+</div>
+                    <p className="text-muted-foreground">Monthly visitors</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-2">500+</div>
+                    <p className="text-muted-foreground">Local businesses listed</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-primary mb-2">95%</div>
+                    <p className="text-muted-foreground">Customer satisfaction</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* FAQ Section */}
+              <div className="py-16 bg-card -mx-4 px-4 rounded-lg">
+                <div className="max-w-3xl mx-auto">
+                  <h2 className="font-display text-3xl font-bold text-foreground text-center mb-12">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        How do I upgrade my listing?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Simply select your preferred plan above and complete the checkout process.
+                        Your listing will be upgraded within 24 hours.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        Can I cancel anytime?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Yes! You can cancel your subscription at any time through the subscription
+                        management portal. Your benefits will continue until the end of your
+                        billing period.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        What payment methods do you accept?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        We accept all major credit and debit cards through our secure payment
+                        provider, Stripe.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            {/* Website Building Tab */}
+            <TabsContent value="website" className="space-y-0">
+              {/* Website Building Hero */}
+              <div className="text-center mb-12">
+                <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-6">
+                  <Globe className="w-4 h-4 mr-2 inline" />
+                  Professional Website Building
+                </Badge>
+                <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">
+                  Beautiful Websites for Small Businesses
+                </h2>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                  We build stunning, modern websites that help your business stand out online. 
+                  From simple landing pages to full e-commerce stores — we've got you covered.
+                </p>
+              </div>
+
+              {/* Features Grid */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-16">
+                <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105">
+                  <Palette className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold text-foreground mb-2">Custom Design</h3>
+                  <p className="text-sm text-muted-foreground">Unique designs tailored to your brand identity and business goals</p>
+                </Card>
+                <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105">
+                  <Smartphone className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold text-foreground mb-2">Mobile Friendly</h3>
+                  <p className="text-sm text-muted-foreground">Looks and works perfectly on all devices and screen sizes</p>
+                </Card>
+                <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105">
+                  <Search className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold text-foreground mb-2">SEO Optimised</h3>
+                  <p className="text-sm text-muted-foreground">Built to rank well on Google and drive organic traffic</p>
+                </Card>
+                <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:scale-105">
+                  <Rocket className="w-12 h-12 text-primary mx-auto mb-4" />
+                  <h3 className="font-semibold text-foreground mb-2">Fast & Secure</h3>
+                  <p className="text-sm text-muted-foreground">Lightning fast loading with SSL security included</p>
+                </Card>
+              </div>
+
+              {/* Pricing Cards */}
+              <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+                <Card className="flex flex-col border-border hover:border-primary/40 transition-all duration-300">
+                  <CardHeader className="text-center pb-4">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+                      <Globe className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-2xl">Starter</CardTitle>
+                    <CardDescription>Perfect for getting online</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold text-foreground">£299</span>
+                      <span className="text-muted-foreground">/one-time</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Single page website</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Mobile responsive design</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Contact form included</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Basic SEO setup</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">1 year hosting included</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Link to={`/${townSlug}/contact`} className="w-full">
+                      <Button variant="outline" className="w-full">
+                        Get Started
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
                   </CardFooter>
                 </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Not logged in notice */}
-      {!user && (
-        <section className="py-8 bg-muted/50">
-          <div className="container mx-auto px-4 max-w-2xl text-center">
-            <p className="text-muted-foreground">
-              Please{" "}
-              <Link to="/admin" className="text-primary underline hover:no-underline">
-                login or create an account
-              </Link>{" "}
-              to subscribe to a premium plan.
-            </p>
-          </div>
-        </section>
-      )}
+                <Card className="flex flex-col border-primary shadow-lg shadow-primary/20 scale-105 relative">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-primary text-primary-foreground text-sm font-medium rounded-full">
+                    Most Popular
+                  </div>
+                  <CardHeader className="text-center pb-4">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-primary text-primary-foreground flex items-center justify-center mb-4">
+                      <Zap className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-2xl">Professional</CardTitle>
+                    <CardDescription>Full business website</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold text-foreground">£599</span>
+                      <span className="text-muted-foreground">/one-time</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Up to 5 pages</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Custom brand design</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Google Maps integration</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Social media links</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Advanced SEO setup</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">1 year hosting + domain</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Link to={`/${townSlug}/contact`} className="w-full">
+                      <Button className="w-full">
+                        Get Started
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
 
-      {/* Benefits Section */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="text-3xl font-display font-bold text-foreground mb-4">
-              Why Advertise With Us?
-            </h2>
-            <p className="text-muted-foreground">
-              Join hundreds of local businesses already growing with Discover Local
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-              <p className="text-muted-foreground">Monthly visitors</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">500+</div>
-              <p className="text-muted-foreground">Local businesses listed</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">95%</div>
-              <p className="text-muted-foreground">Customer satisfaction</p>
-            </div>
-          </div>
-        </div>
-      </section>
+                <Card className="flex flex-col border-border hover:border-primary/40 transition-all duration-300">
+                  <CardHeader className="text-center pb-4">
+                    <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+                      <Crown className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-2xl">E-Commerce</CardTitle>
+                    <CardDescription>Sell products online</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold text-foreground">£999</span>
+                      <span className="text-muted-foreground">/one-time</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <ul className="space-y-3">
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Full online store</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Product management</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Secure payment gateway</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Inventory tracking</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">Order management</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                        <span className="text-muted-foreground">1 year hosting + domain</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                  <CardFooter>
+                    <Link to={`/${townSlug}/contact`} className="w-full">
+                      <Button variant="outline" className="w-full">
+                        Get Started
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              </div>
 
-      {/* FAQ Section */}
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <h2 className="font-display text-3xl font-bold text-foreground text-center mb-12">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">
-                How do I upgrade my listing?
-              </h3>
-              <p className="text-muted-foreground">
-                Simply select your preferred plan above and complete the checkout process.
-                Your listing will be upgraded within 24 hours.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">
-                Can I cancel anytime?
-              </h3>
-              <p className="text-muted-foreground">
-                Yes! You can cancel your subscription at any time through the subscription
-                management portal. Your benefits will continue until the end of your
-                billing period.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-2">
-                What payment methods do you accept?
-              </h3>
-              <p className="text-muted-foreground">
-                We accept all major credit and debit cards through our secure payment
-                provider, Stripe.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+              {/* Portfolio CTA */}
+              <div className="max-w-2xl mx-auto mb-16">
+                <Card className="border-primary/30 bg-card/50 backdrop-blur">
+                  <CardContent className="p-8 text-center">
+                    <h3 className="text-2xl font-display font-bold text-foreground mb-4">
+                      See Our Previous Work
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      Check out websites we've built for other local businesses in {town.name} and surrounding areas.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                      <Link to={`/${townSlug}/portfolio`}>
+                        <Button size="lg" className="w-full sm:w-auto">
+                          View Portfolio
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                      <Link to={`/${townSlug}/contact`}>
+                        <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                          Get a Free Quote
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-      {/* Website Building Service Section */}
-      <section className="py-20 bg-gradient-to-b from-primary/5 via-background to-background border-t border-primary/20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-12">
-            <Badge variant="outline" className="border-primary text-primary px-4 py-1.5 text-base font-semibold mb-6">
-              <Globe className="w-4 h-4 mr-2 inline" />
-              Website Building Service
-            </Badge>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">
-              Need a Professional Website for Your Business?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              We build beautiful, modern websites for small businesses in {town.name}. 
-              From simple landing pages to full e-commerce stores — we've got you covered.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
-            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
-              <Palette className="w-10 h-10 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">Custom Design</h3>
-              <p className="text-sm text-muted-foreground">Unique designs tailored to your brand identity</p>
-            </Card>
-            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
-              <Smartphone className="w-10 h-10 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">Mobile Friendly</h3>
-              <p className="text-sm text-muted-foreground">Looks great on all devices and screen sizes</p>
-            </Card>
-            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
-              <Search className="w-10 h-10 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">SEO Optimised</h3>
-              <p className="text-sm text-muted-foreground">Built to rank well on Google search results</p>
-            </Card>
-            <Card className="text-center p-6 border-primary/20 hover:border-primary/40 transition-colors">
-              <Rocket className="w-10 h-10 text-primary mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">Fast & Secure</h3>
-              <p className="text-sm text-muted-foreground">Lightning fast loading with SSL security</p>
-            </Card>
-          </div>
-
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-primary/30 bg-card/50 backdrop-blur">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-display font-bold text-foreground mb-4">
-                  Websites Starting From £299
-                </h3>
-                <p className="text-muted-foreground mb-6">
-                  Get a professional website up and running in as little as 2 weeks. 
-                  Includes domain setup, hosting for the first year, and basic SEO.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link to={`/${townSlug}/contact`}>
-                    <Button size="lg" className="w-full sm:w-auto">
-                      Get a Free Quote
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
-                  <Link to={`/${townSlug}/portfolio`}>
-                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                      View Our Work
-                    </Button>
-                  </Link>
+              {/* Website FAQ */}
+              <div className="py-16 bg-card -mx-4 px-4 rounded-lg">
+                <div className="max-w-3xl mx-auto">
+                  <h2 className="font-display text-3xl font-bold text-foreground text-center mb-12">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        How long does it take to build a website?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Starter websites typically take 1-2 weeks. Professional sites take 2-3 weeks, 
+                        and e-commerce stores take 3-4 weeks depending on complexity.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        What's included in the hosting?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        All packages include 1 year of hosting, SSL certificate, and email setup. 
+                        After the first year, hosting is £10/month.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        Can I update the website myself?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Yes! We build websites with easy-to-use content management systems so you can 
+                        update text, images, and products yourself. We also offer training.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-2">
+                        Do you offer ongoing support?
+                      </h3>
+                      <p className="text-muted-foreground">
+                        Absolutely. We offer maintenance packages starting at £30/month that include 
+                        updates, backups, security monitoring, and priority support.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-background border-t border-primary/20">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-3xl font-display font-bold text-foreground mb-4">
               Ready to Get Started?
             </h2>
             <p className="text-muted-foreground mb-8">
-              Contact us today to discuss which plan is right for your business
+              Contact us today to discuss which option is right for your business
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to={`/${townSlug}/add-listing`}>
