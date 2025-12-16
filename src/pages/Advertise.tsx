@@ -23,6 +23,37 @@ const Advertise = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentTier, setCurrentTier] = useState<SubscriptionTier>("free");
   const [checkingSubscription, setCheckingSubscription] = useState(false);
+  const [businessCount, setBusinessCount] = useState<number>(0);
+
+  // Fetch business count
+  useEffect(() => {
+    const fetchBusinessCount = async () => {
+      const { count, error } = await supabase
+        .from("businesses")
+        .select("*", { count: "exact", head: true })
+        .eq("town", townSlug);
+      
+      if (!error && count !== null) {
+        setBusinessCount(count);
+      }
+    };
+
+    fetchBusinessCount();
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel("business-count")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "businesses" },
+        () => fetchBusinessCount()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [townSlug]);
 
   // Check for success/cancel from Stripe
   useEffect(() => {
@@ -392,8 +423,8 @@ const Advertise = () => {
                 </div>
                 <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">Local</div>
-                    <p className="text-muted-foreground">Targeted to {town.name} residents</p>
+                    <div className="text-4xl font-bold text-primary mb-2">{businessCount}</div>
+                    <p className="text-muted-foreground">Businesses in {town.name}</p>
                   </div>
                   <div className="text-center">
                     <div className="text-4xl font-bold text-primary mb-2">24/7</div>
