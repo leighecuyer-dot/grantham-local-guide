@@ -1,14 +1,13 @@
 import { useParams, Link } from "react-router-dom";
-import { ChevronLeft, MapPin, Globe, Phone, Instagram, ExternalLink, Star } from "lucide-react";
+import { ChevronLeft, MapPin, Globe, Phone, Instagram, ExternalLink, Star, Loader2 } from "lucide-react";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import AdBanner from "@/components/AdBanner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getBusinessBySlug, getRelatedBusinesses } from "@/data/businesses";
+import { useBusinessBySlug, useBusinessesByCategory } from "@/hooks/useBusinesses";
 import { getCategoryIcon, getCategorySlug } from "@/types/business";
 import { useTown } from "@/contexts/TownContext";
-
 const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
@@ -52,8 +51,28 @@ const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) =>
 
 const Business = () => {
   const { slug } = useParams<{ slug: string }>();
-  const business = getBusinessBySlug(slug || "");
   const { town, townSlug } = useTown();
+  const { data: business, isLoading } = useBusinessBySlug(slug || "");
+  const { data: categoryBusinesses = [] } = useBusinessesByCategory(
+    business?.category || "Café",
+    townSlug
+  );
+
+  // Get related businesses (same category, excluding current)
+  const relatedBusinesses = categoryBusinesses
+    .filter((b) => b.id !== business?.id)
+    .slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container py-24 text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
+          <p className="text-muted-foreground mt-4">Loading business...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!business) {
     return (
@@ -73,7 +92,6 @@ const Business = () => {
     );
   }
 
-  const relatedBusinesses = getRelatedBusinesses(business, 3);
   const encodedAddress = encodeURIComponent(business.address);
 
   return (
