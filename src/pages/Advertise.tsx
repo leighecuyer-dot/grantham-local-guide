@@ -387,21 +387,21 @@ const Advertise = () => {
                     Why Advertise With Us?
                   </h2>
                   <p className="text-muted-foreground">
-                    Join hundreds of local businesses already growing with Discover Local
+                    Get your business in front of local customers actively searching for services like yours
                   </p>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-                    <p className="text-muted-foreground">Monthly visitors</p>
+                    <div className="text-4xl font-bold text-primary mb-2">Local</div>
+                    <p className="text-muted-foreground">Targeted to {town.name} residents</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">500+</div>
-                    <p className="text-muted-foreground">Local businesses listed</p>
+                    <div className="text-4xl font-bold text-primary mb-2">24/7</div>
+                    <p className="text-muted-foreground">Always visible online</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-primary mb-2">95%</div>
-                    <p className="text-muted-foreground">Customer satisfaction</p>
+                    <div className="text-4xl font-bold text-primary mb-2">Free</div>
+                    <p className="text-muted-foreground">Basic listing included</p>
                   </div>
                 </div>
               </div>
