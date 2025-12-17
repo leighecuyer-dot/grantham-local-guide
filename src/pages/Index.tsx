@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap, Monitor, Hotel, Heart } from "lucide-react";
+import { ArrowRight, Search, MapPin, Star, TrendingUp, Clock, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, BookOpen, Trophy, Zap, Monitor, Hotel, Heart, Beer } from "lucide-react";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/Layout";
@@ -14,6 +14,7 @@ import { useTown } from "@/contexts/TownContext";
 const categoryIcons: Record<Category, React.ReactNode> = {
   "Café": <Coffee className="w-5 h-5" />,
   "Restaurant": <Utensils className="w-5 h-5" />,
+  "Pubs & Bars": <Beer className="w-5 h-5" />,
   "Barbers": <Scissors className="w-5 h-5" />,
   "Hairdressers": <Scissors className="w-5 h-5" />,
   "Beauty": <Sparkles className="w-5 h-5" />,

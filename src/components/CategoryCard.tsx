@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Category, getCategorySlug } from "@/types/business";
 import { businesses } from "@/data/businesses";
-import { ArrowRight, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart } from "lucide-react";
+import { ArrowRight, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart, Beer } from "lucide-react";
 import { useTown } from "@/contexts/TownContext";
 
 interface CategoryCardProps {
@@ -11,6 +11,7 @@ interface CategoryCardProps {
 const categoryIcons: Record<Category, React.ReactNode> = {
   "Café": <Coffee className="w-5 h-5" />,
   "Restaurant": <Utensils className="w-5 h-5" />,
+  "Pubs & Bars": <Beer className="w-5 h-5" />,
   "Barbers": <Scissors className="w-5 h-5" />,
   "Hairdressers": <Scissors className="w-5 h-5" />,
   "Beauty": <Sparkles className="w-5 h-5" />,
