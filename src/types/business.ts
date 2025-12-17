@@ -1,6 +1,7 @@
 export type Category =
   | "Café"
   | "Restaurant"
+  | "Pubs & Bars"
   | "Barbers"
   | "Hairdressers"
   | "Beauty"
@@ -48,6 +49,7 @@ export interface Business {
 export const CATEGORIES: Category[] = [
   "Café",
   "Restaurant",
+  "Pubs & Bars",
   "Barbers",
   "Hairdressers",
   "Beauty",
@@ -74,6 +76,7 @@ export const getCategoryIcon = (category: Category): string => {
   const icons: Record<Category, string> = {
     "Café": "☕",
     "Restaurant": "🍽️",
+    "Pubs & Bars": "🍺",
     "Barbers": "✂️",
     "Hairdressers": "💇",
     "Beauty": "💅",

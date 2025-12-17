@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
 import { useBusinessesByCategory } from "@/hooks/useBusinesses";
 import { useTown } from "@/contexts/TownContext";
-import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart } from "lucide-react";
+import { Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart, Beer } from "lucide-react";
 
 const categoryIcons: Record<CategoryType, React.ReactNode> = {
   "Café": <Coffee className="w-6 h-6" />,
   "Restaurant": <Utensils className="w-6 h-6" />,
+  "Pubs & Bars": <Beer className="w-6 h-6" />,
   "Barbers": <Scissors className="w-6 h-6" />,
   "Hairdressers": <Scissors className="w-6 h-6" />,
   "Beauty": <Sparkles className="w-6 h-6" />,
@@ -31,6 +32,7 @@ const categoryIcons: Record<CategoryType, React.ReactNode> = {
 const categoryDescriptions: Record<CategoryType, string> = {
   "Café": "Discover the best coffee shops, tea rooms, and cosy cafés",
   "Restaurant": "Find amazing local restaurants for every occasion",
+  "Pubs & Bars": "Great pubs, bars, and nightlife spots",
   "Barbers": "Top-rated barber shops and men's grooming",
   "Hairdressers": "Hair salons and stylists for all your hair care needs",
   "Beauty": "Salons, spas, and beauty treatments near you",
