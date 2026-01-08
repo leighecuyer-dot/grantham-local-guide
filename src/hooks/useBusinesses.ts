@@ -108,7 +108,7 @@ export const useBusinessesByCategory = (category: Category, town?: string) => {
   return useQuery({
     queryKey: ["businesses", "category", category, town],
     queryFn: async () => {
-      let query = supabase.from("businesses").select("*").eq("category", category);
+      let query = supabase.from("businesses").select("*").eq("category", category as any);
       if (town) {
         query = query.eq("town", town);
       }
@@ -179,23 +179,25 @@ export const useCreateBusiness = () => {
     mutationFn: async (business: CreateBusinessInput) => {
       const { data, error } = await supabase
         .from("businesses")
-        .insert({
-          name: business.name,
-          slug: business.slug,
-          category: business.category,
-          description: business.description,
-          address: business.address,
-          town: business.town,
-          phone: business.phone || null,
-          website: business.website || null,
-          instagram: business.instagram || null,
-          email: business.email || null,
-          image: business.image,
-          featured: business.featured || false,
-          tripadvisor_rating: business.tripadvisor_rating || null,
-          tripadvisor_url: business.tripadvisor_url || null,
-          tags: business.tags || [],
-        })
+        .insert(
+          {
+            name: business.name,
+            slug: business.slug,
+            category: business.category as any,
+            description: business.description,
+            address: business.address,
+            town: business.town,
+            phone: business.phone || null,
+            website: business.website || null,
+            instagram: business.instagram || null,
+            email: business.email || null,
+            image: business.image,
+            featured: business.featured || false,
+            tripadvisor_rating: business.tripadvisor_rating || null,
+            tripadvisor_url: business.tripadvisor_url || null,
+            tags: business.tags || [],
+          } as any
+        )
         .select()
         .single();
       if (error) throw error;
@@ -214,23 +216,25 @@ export const useUpdateBusiness = () => {
     mutationFn: async ({ id, ...business }: CreateBusinessInput & { id: string }) => {
       const { data, error } = await supabase
         .from("businesses")
-        .update({
-          name: business.name,
-          slug: business.slug,
-          category: business.category,
-          description: business.description,
-          address: business.address,
-          town: business.town,
-          phone: business.phone || null,
-          website: business.website || null,
-          instagram: business.instagram || null,
-          email: business.email || null,
-          image: business.image,
-          featured: business.featured || false,
-          tripadvisor_rating: business.tripadvisor_rating || null,
-          tripadvisor_url: business.tripadvisor_url || null,
-          tags: business.tags || [],
-        })
+        .update(
+          {
+            name: business.name,
+            slug: business.slug,
+            category: business.category as any,
+            description: business.description,
+            address: business.address,
+            town: business.town,
+            phone: business.phone || null,
+            website: business.website || null,
+            instagram: business.instagram || null,
+            email: business.email || null,
+            image: business.image,
+            featured: business.featured || false,
+            tripadvisor_rating: business.tripadvisor_rating || null,
+            tripadvisor_url: business.tripadvisor_url || null,
+            tags: business.tags || [],
+          } as any
+        )
         .eq("id", id)
         .select()
         .single();

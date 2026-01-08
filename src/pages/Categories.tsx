@@ -6,28 +6,42 @@ import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
 import LogoBanner from "@/components/LogoBanner";
 import { CATEGORIES } from "@/types/business";
-import { businesses } from "@/data/businesses";
 import { useTown } from "@/contexts/TownContext";
+import { useBusinesses } from "@/hooks/useBusinesses";
 import granthamSkyline from "@/assets/grantham-skyline.jpg";
 
 const Categories = () => {
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get("search") || "";
   const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const { town } = useTown();
+  const { town, townSlug } = useTown();
+
+  const {
+    data: allBusinesses = [],
+    isLoading: businessesLoading,
+    error: businessesError,
+  } = useBusinesses(townSlug);
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const b of allBusinesses) {
+      counts[b.category] = (counts[b.category] ?? 0) + 1;
+    }
+    return counts;
+  }, [allBusinesses]);
 
   const searchResults = useMemo(() => {
     if (!searchQuery.trim()) return null;
-    
+
     const query = searchQuery.toLowerCase();
-    return businesses.filter(
+    return allBusinesses.filter(
       (business) =>
         business.name.toLowerCase().includes(query) ||
         business.description.toLowerCase().includes(query) ||
         business.category.toLowerCase().includes(query) ||
         business.address.toLowerCase().includes(query)
     );
-  }, [searchQuery]);
+  }, [allBusinesses, searchQuery]);
 
   return (
     <Layout>
@@ -37,13 +51,13 @@ const Categories = () => {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-secondary via-background to-background py-12 md:py-16">
         {/* Background image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center opacity-10"
           style={{ backgroundImage: `url(${granthamSkyline})` }}
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
-        
+
         <div className="container relative z-10 text-center">
           <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
             Browse Categories
@@ -62,7 +76,13 @@ const Categories = () => {
       {/* Content */}
       <section className="py-12 md:py-16">
         <div className="container">
-          {searchResults ? (
+          {businessesLoading ? (
+            <p className="text-muted-foreground text-center py-8">Loading businesses…</p>
+          ) : businessesError ? (
+            <p className="text-muted-foreground text-center py-8">
+              Couldn’t load businesses. Please refresh and try again.
+            </p>
+          ) : searchResults ? (
             <>
               <h2 className="text-xl font-semibold text-foreground mb-6">
                 {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for "{searchQuery}"
@@ -82,7 +102,11 @@ const Categories = () => {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {CATEGORIES.map((category) => (
-                <CategoryCard key={category} category={category} />
+                <CategoryCard
+                  key={category}
+                  category={category}
+                  count={categoryCounts[category] ?? 0}
+                />
               ))}
             </div>
           )}

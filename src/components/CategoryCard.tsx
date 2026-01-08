@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
 import { Category, getCategorySlug } from "@/types/business";
-import { businesses } from "@/data/businesses";
-import { ArrowRight, Coffee, Utensils, Scissors, Sparkles, ShoppingBag, Wrench, Baby, Briefcase, Dumbbell, Trophy, Monitor, Hotel, Heart, Beer } from "lucide-react";
+import {
+  ArrowRight,
+  Coffee,
+  Utensils,
+  Scissors,
+  Sparkles,
+  ShoppingBag,
+  Wrench,
+  Baby,
+  Briefcase,
+  Dumbbell,
+  Trophy,
+  Monitor,
+  Hotel,
+  Heart,
+  Beer,
+} from "lucide-react";
 import { useTown } from "@/contexts/TownContext";
 
 interface CategoryCardProps {
   category: Category;
+  count: number;
 }
 
 const categoryIcons: Record<Category, React.ReactNode> = {
@@ -26,10 +42,8 @@ const categoryIcons: Record<Category, React.ReactNode> = {
   "Health & Wellbeing": <Heart className="w-5 h-5" />,
 };
 
-const CategoryCard = ({ category }: CategoryCardProps) => {
+const CategoryCard = ({ category, count }: CategoryCardProps) => {
   const { townSlug } = useTown();
-  const count = businesses.filter((b) => b.category === category).length;
-
   return (
     <Link
       to={`/${townSlug}/category/${getCategorySlug(category)}`}
