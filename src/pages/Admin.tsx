@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye, Upload } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -363,7 +363,12 @@ const Admin = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading, signOut } = useAuth();
   const { data: isAdmin, isLoading: adminLoading } = useIsAdmin(user?.id);
-  const { data: businesses, isLoading: businessesLoading } = useBusinesses();
+  const {
+    data: businesses,
+    isLoading: businessesLoading,
+    isFetching: businessesFetching,
+    refetch: refetchBusinesses,
+  } = useBusinesses();
   const createBusiness = useCreateBusiness();
   const updateBusiness = useUpdateBusiness();
   const deleteBusiness = useDeleteBusiness();
@@ -468,7 +473,19 @@ const Admin = () => {
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage your business listings</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
+            <div className="text-sm text-muted-foreground hidden sm:block">
+              {businessesLoading ? "Loading…" : `${businesses?.length ?? 0} businesses`}
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => refetchBusinesses()}
+              disabled={businessesFetching}
+              title="Refresh businesses"
+            >
+              <RefreshCcw className={`w-4 h-4 mr-2 ${businessesFetching ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
             <Dialog open={bulkImportOpen} onOpenChange={setBulkImportOpen}>
               <DialogTrigger asChild>
                 <Button variant="outline">

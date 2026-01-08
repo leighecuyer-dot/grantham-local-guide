@@ -52,7 +52,9 @@ export const useBusinesses = (town?: string) => {
       if (town) {
         query = query.eq("town", town);
       }
-      const { data, error } = await query.order("created_at", { ascending: false });
+      const { data, error } = await query
+        .order("created_at", { ascending: false })
+        .limit(1000);
       if (error) throw error;
       return (data as DbBusiness[]).map(mapDbToBusiness);
     },
