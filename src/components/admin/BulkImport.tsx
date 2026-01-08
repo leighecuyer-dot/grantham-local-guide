@@ -10,8 +10,15 @@ import { CATEGORIES, Category } from "@/types/business";
 import { CreateBusinessInput } from "@/hooks/useBusinesses";
 import * as XLSX from "xlsx";
 
+type ImportResult = {
+  imported: number;
+  duplicates: number;
+  failed: number;
+  firstError?: string;
+};
+
 interface BulkImportProps {
-  onImport: (businesses: CreateBusinessInput[]) => Promise<void>;
+  onImport: (businesses: CreateBusinessInput[]) => Promise<ImportResult>;
 }
 
 interface ParsedRow {
@@ -504,12 +511,22 @@ export const BulkImport = ({ onImport }: BulkImportProps) => {
 
     setLoading(true);
     try {
-      await onImport(preview);
+      const result = await onImport(preview);
+
       setPreview([]);
       setSkippedRows([]);
       setPasteData("");
       setSheetsUrl("");
-      toast.success(`Successfully imported ${preview.length} businesses!`);
+
+      if (result.imported > 0) {
+        toast.success(
+          `Imported ${result.imported} businesses${result.duplicates ? ` (${result.duplicates} duplicates skipped)` : ""}${result.failed ? ` (${result.failed} failed)` : ""}.`
+        );
+      } else if (result.duplicates > 0 && result.failed === 0) {
+        toast.info(`No new businesses imported — ${result.duplicates} duplicates skipped.`);
+      } else {
+        toast.error(`Import finished with issues — ${result.failed} failed.${result.firstError ? ` First error: ${result.firstError}` : ""}`);
+      }
     } catch (error: any) {
       toast.error(`Import failed: ${error.message}`);
     } finally {
