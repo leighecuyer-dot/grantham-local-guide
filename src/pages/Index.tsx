@@ -8,7 +8,7 @@ import SearchBar from "@/components/SearchBar";
 import AdBanner from "@/components/AdBanner";
 import LogoBanner from "@/components/LogoBanner";
 import { CATEGORIES, Category, getCategorySlug } from "@/types/business";
-import { getFeaturedBusinesses, getLatestBusinesses, getTrendingBusinesses } from "@/data/businesses";
+import { useFeaturedBusinesses, useLatestBusinesses, useTrendingBusinesses } from "@/hooks/useBusinesses";
 import { useTown } from "@/contexts/TownContext";
 
 const categoryIcons: Record<Category, React.ReactNode> = {
@@ -30,10 +30,10 @@ const categoryIcons: Record<Category, React.ReactNode> = {
 };
 
 const Index = () => {
-  const featuredBusinesses = getFeaturedBusinesses();
-  const latestBusinesses = getLatestBusinesses(6);
-  const trendingBusinesses = getTrendingBusinesses(6);
   const { town, townSlug } = useTown();
+  const { data: featuredBusinesses = [], isLoading: featuredLoading } = useFeaturedBusinesses(townSlug);
+  const { data: latestBusinesses = [], isLoading: latestLoading } = useLatestBusinesses(townSlug, 6);
+  const { data: trendingBusinesses = [], isLoading: trendingLoading } = useTrendingBusinesses(townSlug, 6);
 
   return (
     <Layout>
@@ -136,11 +136,17 @@ const Index = () => {
           </div>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredBusinesses.slice(0, 6).map((business, index) => (
-              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                <BusinessCard business={business} />
-              </div>
-            ))}
+            {featuredLoading ? (
+              <div className="col-span-full text-center text-muted-foreground">Loading featured businesses…</div>
+            ) : featuredBusinesses.length === 0 ? (
+              <div className="col-span-full text-center text-muted-foreground">No featured businesses yet.</div>
+            ) : (
+              featuredBusinesses.slice(0, 6).map((business, index) => (
+                <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <BusinessCard business={business} />
+                </div>
+              ))
+            )}
           </div>
           
           <div className="text-center mt-10">
@@ -171,11 +177,17 @@ const Index = () => {
           </div>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {trendingBusinesses.slice(0, 6).map((business, index) => (
-              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                <BusinessCard business={business} />
-              </div>
-            ))}
+            {trendingLoading ? (
+              <div className="col-span-full text-center text-muted-foreground">Loading trending businesses…</div>
+            ) : trendingBusinesses.length === 0 ? (
+              <div className="col-span-full text-center text-muted-foreground">No businesses yet.</div>
+            ) : (
+              trendingBusinesses.slice(0, 6).map((business, index) => (
+                <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <BusinessCard business={business} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -234,11 +246,17 @@ const Index = () => {
           </div>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {latestBusinesses.map((business, index) => (
-              <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                <BusinessCard business={business} />
-              </div>
-            ))}
+            {latestLoading ? (
+              <div className="col-span-full text-center text-muted-foreground">Loading latest businesses…</div>
+            ) : latestBusinesses.length === 0 ? (
+              <div className="col-span-full text-center text-muted-foreground">No businesses yet.</div>
+            ) : (
+              latestBusinesses.map((business, index) => (
+                <div key={business.id} className="opacity-0 animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <BusinessCard business={business} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
