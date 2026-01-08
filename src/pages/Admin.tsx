@@ -373,30 +373,36 @@ const Admin = () => {
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
 
   const handleBulkImport = async (businesses: CreateBusinessInput[]) => {
-    // Fetch existing slugs to avoid duplicates
-    const { data: existing } = await supabase.from("businesses").select("slug");
+    const { data: existing, error: existingError } = await supabase
+      .from("businesses")
+      .select("slug");
+
+    if (existingError) throw existingError;
+
     const existingSlugs = new Set((existing || []).map((b: any) => b.slug));
-    
+
     let imported = 0;
-    let skipped = 0;
-    
+    let duplicates = 0;
+    let failed = 0;
+    let firstError: string | undefined;
+
     for (const business of businesses) {
       if (existingSlugs.has(business.slug)) {
-        skipped++;
-        continue; // Skip duplicates
+        duplicates++;
+        continue;
       }
+
       try {
         await createBusiness.mutateAsync(business);
-        existingSlugs.add(business.slug); // Track newly added
+        existingSlugs.add(business.slug);
         imported++;
-      } catch (error) {
-        skipped++;
+      } catch (error: any) {
+        failed++;
+        if (!firstError) firstError = error?.message || "Unknown error";
       }
     }
-    
-    if (skipped > 0) {
-      toast.info(`Imported ${imported}, skipped ${skipped} duplicates`);
-    }
+
+    return { imported, duplicates, failed, firstError };
   };
 
   if (authLoading || adminLoading) {
