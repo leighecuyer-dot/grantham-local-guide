@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
+import { ImageScraper } from "@/components/admin/ImageScraper";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -376,6 +377,7 @@ const Admin = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBusiness, setEditingBusiness] = useState<any>(null);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
+  const [imageScraperOpen, setImageScraperOpen] = useState(false);
 
   const handleBulkImport = async (businesses: CreateBusinessInput[]) => {
     const { data: existing, error: existingError } = await supabase
@@ -498,6 +500,27 @@ const Admin = () => {
                   <DialogTitle>Bulk Import Businesses</DialogTitle>
                 </DialogHeader>
                 <BulkImport onImport={handleBulkImport} />
+              </DialogContent>
+            </Dialog>
+            <Dialog open={imageScraperOpen} onOpenChange={setImageScraperOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <ImageIcon className="w-4 h-4 mr-2" />
+                  Scrape Images
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Scrape Business Images</DialogTitle>
+                </DialogHeader>
+                {businesses && (
+                  <ImageScraper
+                    businesses={businesses}
+                    onComplete={() => {
+                      refetchBusinesses();
+                    }}
+                  />
+                )}
               </DialogContent>
             </Dialog>
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

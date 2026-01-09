@@ -1,0 +1,177 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { ImageIcon, Loader2, CheckCircle, XCircle } from "lucide-react";
+import type { Business } from "@/types/business";
+
+interface ImageScraperProps {
+  businesses: Business[];
+  onComplete: () => void;
+}
+
+interface ScrapeResult {
+  id: string;
+  name: string;
+  status: "pending" | "success" | "error" | "skipped";
+  error?: string;
+}
+
+export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
+  const [isRunning, setIsRunning] = useState(false);
+  const [results, setResults] = useState<ScrapeResult[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const businessesWithWebsites = businesses.filter(
+    (b) => b.website && b.website.trim() !== ""
+  );
+
+  const scrapeImages = async () => {
+    setIsRunning(true);
+    setResults([]);
+    setCurrentIndex(0);
+
+    const newResults: ScrapeResult[] = businessesWithWebsites.map((b) => ({
+      id: b.id,
+      name: b.name,
+      status: "pending" as const,
+    }));
+    setResults(newResults);
+
+    for (let i = 0; i < businessesWithWebsites.length; i++) {
+      const business = businessesWithWebsites[i];
+      setCurrentIndex(i + 1);
+
+      try {
+        const { data, error } = await supabase.functions.invoke(
+          "scrape-business-image",
+          {
+            body: {
+              businessId: business.id,
+              websiteUrl: business.website,
+            },
+          }
+        );
+
+        if (error || !data?.success) {
+          newResults[i] = {
+            ...newResults[i],
+            status: "error",
+            error: error?.message || data?.error || "Unknown error",
+          };
+        } else {
+          newResults[i] = { ...newResults[i], status: "success" };
+        }
+      } catch (err: unknown) {
+        newResults[i] = {
+          ...newResults[i],
+          status: "error",
+          error: err instanceof Error ? err.message : "Failed to scrape",
+        };
+      }
+
+      setResults([...newResults]);
+
+      // Small delay between requests to avoid rate limiting
+      if (i < businessesWithWebsites.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
+    }
+
+    const successCount = newResults.filter((r) => r.status === "success").length;
+    const errorCount = newResults.filter((r) => r.status === "error").length;
+
+    if (successCount > 0) {
+      toast.success(`Scraped ${successCount} images successfully!`);
+    }
+    if (errorCount > 0) {
+      toast.error(`${errorCount} businesses failed to scrape.`);
+    }
+
+    setIsRunning(false);
+    onComplete();
+  };
+
+  const progress =
+    businessesWithWebsites.length > 0
+      ? (currentIndex / businessesWithWebsites.length) * 100
+      : 0;
+
+  const totalBusinesses = businesses.length;
+  const withWebsite = businessesWithWebsites.length;
+  const withoutWebsite = totalBusinesses - withWebsite;
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm text-muted-foreground space-y-1">
+        <p>
+          <strong>{totalBusinesses}</strong> total businesses
+        </p>
+        <p>
+          <strong>{withWebsite}</strong> have websites (will be scraped)
+        </p>
+        <p>
+          <strong>{withoutWebsite}</strong> without websites (will be skipped)
+        </p>
+      </div>
+
+      {!isRunning && results.length === 0 && (
+        <Button
+          onClick={scrapeImages}
+          disabled={withWebsite === 0}
+          className="w-full"
+        >
+          <ImageIcon className="w-4 h-4 mr-2" />
+          Scrape Images for {withWebsite} Businesses
+        </Button>
+      )}
+
+      {isRunning && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>
+              Scraping {currentIndex} of {withWebsite}...
+            </span>
+          </div>
+          <Progress value={progress} />
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <div className="max-h-60 overflow-y-auto space-y-1 border rounded-lg p-2">
+          {results.map((result) => (
+            <div
+              key={result.id}
+              className="flex items-center gap-2 text-sm py-1 px-2 rounded hover:bg-muted/50"
+            >
+              {result.status === "pending" && (
+                <div className="w-4 h-4 rounded-full bg-muted" />
+              )}
+              {result.status === "success" && (
+                <CheckCircle className="w-4 h-4 text-green-500" />
+              )}
+              {result.status === "error" && (
+                <XCircle className="w-4 h-4 text-destructive" />
+              )}
+              <span className="truncate flex-1">{result.name}</span>
+              {result.error && (
+                <span className="text-xs text-destructive truncate max-w-[150px]">
+                  {result.error}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!isRunning && results.length > 0 && (
+        <Button onClick={scrapeImages} variant="outline" className="w-full">
+          <ImageIcon className="w-4 h-4 mr-2" />
+          Run Again
+        </Button>
+      )}
+    </div>
+  );
+};
