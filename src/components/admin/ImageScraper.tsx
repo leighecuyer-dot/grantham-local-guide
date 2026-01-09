@@ -23,24 +23,34 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
   const [results, setResults] = useState<ScrapeResult[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const isPlaceholderImage = (image: string) => {
+    return !image || image.includes("placeholder") || image.includes("unsplash.com");
+  };
+
   const businessesWithWebsites = businesses.filter(
     (b) => b.website && b.website.trim() !== ""
   );
+
+  const businessesToScrape = businessesWithWebsites.filter(
+    (b) => isPlaceholderImage(b.image)
+  );
+
+  const alreadyHaveImages = businessesWithWebsites.length - businessesToScrape.length;
 
   const scrapeImages = async () => {
     setIsRunning(true);
     setResults([]);
     setCurrentIndex(0);
 
-    const newResults: ScrapeResult[] = businessesWithWebsites.map((b) => ({
+    const newResults: ScrapeResult[] = businessesToScrape.map((b) => ({
       id: b.id,
       name: b.name,
       status: "pending" as const,
     }));
     setResults(newResults);
 
-    for (let i = 0; i < businessesWithWebsites.length; i++) {
-      const business = businessesWithWebsites[i];
+    for (let i = 0; i < businessesToScrape.length; i++) {
+      const business = businessesToScrape[i];
       setCurrentIndex(i + 1);
 
       try {
@@ -82,7 +92,7 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
       setResults([...newResults]);
 
       // Small delay between requests to avoid rate limiting
-      if (i < businessesWithWebsites.length - 1) {
+      if (i < businessesToScrape.length - 1) {
         await new Promise((resolve) => setTimeout(resolve, 1500));
       }
     }
@@ -102,13 +112,14 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
   };
 
   const progress =
-    businessesWithWebsites.length > 0
-      ? (currentIndex / businessesWithWebsites.length) * 100
+    businessesToScrape.length > 0
+      ? (currentIndex / businessesToScrape.length) * 100
       : 0;
 
   const totalBusinesses = businesses.length;
   const withWebsite = businessesWithWebsites.length;
   const withoutWebsite = totalBusinesses - withWebsite;
+  const needsScraping = businessesToScrape.length;
 
   return (
     <div className="space-y-4">
@@ -117,21 +128,30 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
           <strong>{totalBusinesses}</strong> total businesses
         </p>
         <p>
-          <strong>{withWebsite}</strong> have websites (will be scraped)
+          <strong>{withWebsite}</strong> have websites
         </p>
         <p>
-          <strong>{withoutWebsite}</strong> without websites (will be skipped)
+          <strong>{alreadyHaveImages}</strong> already have images (skipped)
+        </p>
+        <p>
+          <strong>{withoutWebsite}</strong> without websites (skipped)
+        </p>
+        <p className="text-foreground font-medium">
+          <strong>{needsScraping}</strong> need images and will be scraped
         </p>
       </div>
 
       {!isRunning && results.length === 0 && (
         <Button
           onClick={scrapeImages}
-          disabled={withWebsite === 0}
+          disabled={needsScraping === 0}
           className="w-full"
         >
           <ImageIcon className="w-4 h-4 mr-2" />
-          Scrape Images for {withWebsite} Businesses
+          {needsScraping > 0 
+            ? `Scrape Images for ${needsScraping} Businesses`
+            : "All businesses have images"
+          }
         </Button>
       )}
 
@@ -140,7 +160,7 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
           <div className="flex items-center gap-2 text-sm">
             <Loader2 className="w-4 h-4 animate-spin" />
             <span>
-              Scraping {currentIndex} of {withWebsite}...
+              Scraping {currentIndex} of {needsScraping}...
             </span>
           </div>
           <Progress value={progress} />
