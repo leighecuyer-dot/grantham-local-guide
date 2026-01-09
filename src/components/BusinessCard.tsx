@@ -14,15 +14,20 @@ const TripAdvisorRating = ({ rating }: { rating: number }) => {
   
   return (
     <div className="flex items-center gap-1.5">
+      <img 
+        src="https://static.tacdn.com/img2/brand_refresh/Tripadvisor_logoset_solid_green.svg" 
+        alt="TripAdvisor" 
+        className="h-4 w-4"
+      />
       <div className="flex items-center gap-0.5">
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
             className={`w-2.5 h-2.5 rounded-full ${
               i < fullStars
-                ? "bg-primary"
+                ? "bg-[#00aa6c]"
                 : i === fullStars && hasHalfStar
-                ? "bg-gradient-to-r from-primary from-50% to-muted to-50%"
+                ? "bg-gradient-to-r from-[#00aa6c] from-50% to-muted to-50%"
                 : "bg-muted"
             }`}
           />
