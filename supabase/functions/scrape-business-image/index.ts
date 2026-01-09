@@ -66,7 +66,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get screenshot from response
+    // Get screenshot from response - can be a URL or base64
     const screenshot = scrapeData.data?.screenshot || scrapeData.screenshot;
 
     if (!screenshot) {
@@ -76,9 +76,27 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Convert base64 to binary
-    const base64Data = screenshot.replace(/^data:image\/\w+;base64,/, "");
-    const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+    let binaryData: Uint8Array;
+
+    // Check if screenshot is a URL or base64 data
+    if (screenshot.startsWith("http://") || screenshot.startsWith("https://")) {
+      // Fetch the image from URL
+      console.log("Fetching screenshot from URL:", screenshot);
+      const imageResponse = await fetch(screenshot);
+      if (!imageResponse.ok) {
+        return new Response(
+          JSON.stringify({ success: false, error: "Failed to fetch screenshot image" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const arrayBuffer = await imageResponse.arrayBuffer();
+      binaryData = new Uint8Array(arrayBuffer);
+    } else {
+      // Convert base64 to binary
+      console.log("Decoding base64 screenshot");
+      const base64Data = screenshot.replace(/^data:image\/\w+;base64,/, "");
+      binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+    }
 
     // Upload to Supabase storage
     const fileName = `${businessId}.png`;
