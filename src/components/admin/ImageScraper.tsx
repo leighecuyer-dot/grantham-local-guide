@@ -55,10 +55,18 @@ export const ImageScraper = ({ businesses, onComplete }: ImageScraperProps) => {
         );
 
         if (error || !data?.success) {
+          const rawError = error?.message || data?.error || "Unknown error";
+          // Simplify common error messages
+          let friendlyError = rawError;
+          if (rawError.includes("not currently supported")) {
+            friendlyError = "Site not supported (Facebook, etc.)";
+          } else if (rawError.includes("No screenshot")) {
+            friendlyError = "No image found";
+          }
           newResults[i] = {
             ...newResults[i],
             status: "error",
-            error: error?.message || data?.error || "Unknown error",
+            error: friendlyError,
           };
         } else {
           newResults[i] = { ...newResults[i], status: "success" };
