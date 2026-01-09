@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
 import { ImageScraper } from "@/components/admin/ImageScraper";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -245,13 +246,11 @@ const BusinessForm = ({
       </div>
 
       <div>
-        <Label htmlFor="image">Image URL *</Label>
-        <Input
-          id="image"
+        <Label htmlFor="image">Image *</Label>
+        <ImageUpload
           value={formData.image}
-          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-          required
-          placeholder="https://..."
+          onChange={(url) => setFormData({ ...formData, image: url })}
+          businessSlug={formData.slug}
         />
       </div>
 
