@@ -14,12 +14,10 @@ interface ImageUploadProps {
 export const ImageUpload = ({ value, onChange, businessSlug }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleFile = async (file: File) => {
     // Validate file type
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
@@ -70,6 +68,37 @@ export const ImageUpload = ({ value, onChange, businessSlug }: ImageUploadProps)
     }
   };
 
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFile(file);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFile(file);
+  };
+
   const handleClear = () => {
     onChange("");
     setPreview(null);
@@ -82,25 +111,50 @@ export const ImageUpload = ({ value, onChange, businessSlug }: ImageUploadProps)
 
   return (
     <div className="space-y-3">
+      <div
+        className={`border-2 border-dashed rounded-lg p-4 transition-colors cursor-pointer ${
+          isDragging
+            ? "border-primary bg-primary/5"
+            : "border-border hover:border-primary/50"
+        }`}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+      >
+        {displayImage ? (
+          <div className="relative rounded-lg overflow-hidden bg-muted">
+            <img
+              src={displayImage}
+              alt="Preview"
+              className="w-full h-32 object-cover"
+              onError={() => setPreview(null)}
+            />
+            {uploading && (
+              <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-4 text-muted-foreground">
+            <Upload className="w-8 h-8 mb-2" />
+            <p className="text-sm font-medium">
+              {isDragging ? "Drop image here" : "Drag & drop or click to upload"}
+            </p>
+            <p className="text-xs mt-1">Max 5MB, images only</p>
+          </div>
+        )}
+      </div>
+
       <div className="flex gap-2">
         <Input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="https://... or upload an image"
+          placeholder="Or paste image URL here..."
           className="flex-1"
         />
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-        >
-          {uploading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
-            <Upload className="w-4 h-4" />
-          )}
-        </Button>
         {displayImage && (
           <Button
             type="button"
@@ -120,22 +174,6 @@ export const ImageUpload = ({ value, onChange, businessSlug }: ImageUploadProps)
         onChange={handleFileSelect}
         className="hidden"
       />
-
-      {displayImage && (
-        <div className="relative rounded-lg overflow-hidden border border-border bg-muted">
-          <img
-            src={displayImage}
-            alt="Preview"
-            className="w-full h-32 object-cover"
-            onError={() => setPreview(null)}
-          />
-          {uploading && (
-            <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 };
