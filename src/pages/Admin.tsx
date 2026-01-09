@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon, ImageOff, Filter } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
 import { ImageScraper } from "@/components/admin/ImageScraper";
 import { ImageUpload } from "@/components/admin/ImageUpload";
@@ -377,6 +377,22 @@ const Admin = () => {
   const [editingBusiness, setEditingBusiness] = useState<any>(null);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [imageScraperOpen, setImageScraperOpen] = useState(false);
+  const [imageFilter, setImageFilter] = useState<"all" | "missing" | "has">("all");
+
+  const isPlaceholderImage = (image: string) => {
+    return !image || image.includes("placeholder") || image.includes("unsplash.com");
+  };
+
+  const filteredBusinesses = useMemo(() => {
+    if (!businesses) return [];
+    if (imageFilter === "all") return businesses;
+    if (imageFilter === "missing") return businesses.filter((b) => isPlaceholderImage(b.image));
+    return businesses.filter((b) => !isPlaceholderImage(b.image));
+  }, [businesses, imageFilter]);
+
+  const missingImageCount = useMemo(() => {
+    return businesses?.filter((b) => isPlaceholderImage(b.image)).length ?? 0;
+  }, [businesses]);
 
   const handleBulkImport = async (businesses: CreateBusinessInput[]) => {
     const { data: existing, error: existingError } = await supabase
@@ -474,10 +490,24 @@ const Admin = () => {
             <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
             <p className="text-muted-foreground">Manage your business listings</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center flex-wrap">
             <div className="text-sm text-muted-foreground hidden sm:block">
-              {businessesLoading ? "Loading…" : `${businesses?.length ?? 0} businesses`}
+              {businessesLoading ? "Loading…" : `${filteredBusinesses.length} of ${businesses?.length ?? 0} businesses`}
+              {missingImageCount > 0 && (
+                <span className="ml-2 text-amber-600">({missingImageCount} missing images)</span>
+              )}
             </div>
+            <Select value={imageFilter} onValueChange={(v) => setImageFilter(v as "all" | "missing" | "has")}>
+              <SelectTrigger className="w-[160px]">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Businesses</SelectItem>
+                <SelectItem value="missing">Missing Images</SelectItem>
+                <SelectItem value="has">Has Images</SelectItem>
+              </SelectContent>
+            </Select>
             <Button
               variant="outline"
               onClick={() => refetchBusinesses()}
@@ -571,15 +601,22 @@ const Admin = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {businesses.map((business) => (
+                  {filteredBusinesses.map((business) => (
                     <tr key={business.id} className="hover:bg-muted/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={business.image}
-                            alt={business.name}
-                            className="w-10 h-10 rounded-lg object-cover"
-                          />
+                          <div className="relative">
+                            <img
+                              src={business.image}
+                              alt={business.name}
+                              className="w-10 h-10 rounded-lg object-cover"
+                            />
+                            {isPlaceholderImage(business.image) && (
+                              <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5" title="Missing image">
+                                <ImageOff className="w-3 h-3" />
+                              </div>
+                            )}
+                          </div>
                           <span className="font-medium text-foreground">{business.name}</span>
                         </div>
                       </td>
