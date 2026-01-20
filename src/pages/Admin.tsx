@@ -133,6 +133,8 @@ const BusinessForm = ({
     featured: business?.featured || false,
     tripadvisor_rating: business?.tripadvisorRating || undefined,
     tripadvisor_url: business?.tripadvisorUrl || "",
+    google_rating: business?.googleRating || undefined,
+    google_reviews_url: business?.googleReviewsUrl || "",
     tags: business?.tags || [],
   });
 
@@ -303,7 +305,7 @@ const BusinessForm = ({
             type="number"
             min="0"
             max="5"
-            step="0.5"
+            step="0.1"
             value={formData.tripadvisor_rating || ""}
             onChange={(e) => setFormData({ ...formData, tripadvisor_rating: e.target.value ? parseFloat(e.target.value) : undefined })}
           />
@@ -314,6 +316,29 @@ const BusinessForm = ({
             id="tripadvisor_url"
             value={formData.tripadvisor_url}
             onChange={(e) => setFormData({ ...formData, tripadvisor_url: e.target.value })}
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="google_rating">Google Rating</Label>
+          <Input
+            id="google_rating"
+            type="number"
+            min="0"
+            max="5"
+            step="0.1"
+            value={formData.google_rating || ""}
+            onChange={(e) => setFormData({ ...formData, google_rating: e.target.value ? parseFloat(e.target.value) : undefined })}
+          />
+        </div>
+        <div>
+          <Label htmlFor="google_reviews_url">Google Reviews URL</Label>
+          <Input
+            id="google_reviews_url"
+            value={formData.google_reviews_url}
+            onChange={(e) => setFormData({ ...formData, google_reviews_url: e.target.value })}
           />
         </div>
       </div>

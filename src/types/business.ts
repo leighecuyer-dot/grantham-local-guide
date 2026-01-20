@@ -41,6 +41,8 @@ export interface Business {
   featured: boolean;
   tripadvisorRating?: number;
   tripadvisorUrl?: string;
+  googleRating?: number;
+  googleReviewsUrl?: string;
   tags?: BusinessTag[];
   views?: number;
   createdAt?: string;

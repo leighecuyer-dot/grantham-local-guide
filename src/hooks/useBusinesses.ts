@@ -18,6 +18,8 @@ interface DbBusiness {
   featured: boolean;
   tripadvisor_rating: number | null;
   tripadvisor_url: string | null;
+  google_rating: number | null;
+  google_reviews_url: string | null;
   tags: string[] | null;
   views: number;
   created_at: string;
@@ -39,6 +41,8 @@ const mapDbToBusiness = (db: DbBusiness): Business => ({
   featured: db.featured,
   tripadvisorRating: db.tripadvisor_rating || undefined,
   tripadvisorUrl: db.tripadvisor_url || undefined,
+  googleRating: db.google_rating || undefined,
+  googleReviewsUrl: db.google_reviews_url || undefined,
   tags: (db.tags as BusinessTag[]) || undefined,
   views: db.views,
   createdAt: db.created_at.split('T')[0],
@@ -171,6 +175,8 @@ export interface CreateBusinessInput {
   featured?: boolean;
   tripadvisor_rating?: number;
   tripadvisor_url?: string;
+  google_rating?: number;
+  google_reviews_url?: string;
   tags?: BusinessTag[];
 }
 
@@ -197,6 +203,8 @@ export const useCreateBusiness = () => {
             featured: business.featured || false,
             tripadvisor_rating: business.tripadvisor_rating || null,
             tripadvisor_url: business.tripadvisor_url || null,
+            google_rating: business.google_rating || null,
+            google_reviews_url: business.google_reviews_url || null,
             tags: business.tags || [],
           } as any
         )
@@ -234,6 +242,8 @@ export const useUpdateBusiness = () => {
             featured: business.featured || false,
             tripadvisor_rating: business.tripadvisor_rating || null,
             tripadvisor_url: business.tripadvisor_url || null,
+            google_rating: business.google_rating || null,
+            google_reviews_url: business.google_reviews_url || null,
             tags: business.tags || [],
           } as any
         )
