@@ -22,6 +22,8 @@ export type Database = {
           description: string
           email: string | null
           featured: boolean
+          google_rating: number | null
+          google_reviews_url: string | null
           id: string
           image: string
           instagram: string | null
@@ -43,6 +45,8 @@ export type Database = {
           description: string
           email?: string | null
           featured?: boolean
+          google_rating?: number | null
+          google_reviews_url?: string | null
           id?: string
           image: string
           instagram?: string | null
@@ -64,6 +68,8 @@ export type Database = {
           description?: string
           email?: string | null
           featured?: boolean
+          google_rating?: number | null
+          google_reviews_url?: string | null
           id?: string
           image?: string
           instagram?: string | null
