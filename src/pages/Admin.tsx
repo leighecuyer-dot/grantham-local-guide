@@ -1,8 +1,9 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon, ImageOff, Filter } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon, ImageOff, Filter, Star } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
 import { ImageScraper } from "@/components/admin/ImageScraper";
+import { RatingImport } from "@/components/admin/RatingImport";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -402,6 +403,7 @@ const Admin = () => {
   const [editingBusiness, setEditingBusiness] = useState<any>(null);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [imageScraperOpen, setImageScraperOpen] = useState(false);
+  const [ratingImportOpen, setRatingImportOpen] = useState(false);
   const [imageFilter, setImageFilter] = useState<"all" | "missing" | "has">("all");
 
   const isPlaceholderImage = (image: string) => {
@@ -572,6 +574,28 @@ const Admin = () => {
                     businesses={businesses}
                     onComplete={() => {
                       refetchBusinesses();
+                    }}
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
+            <Dialog open={ratingImportOpen} onOpenChange={setRatingImportOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Star className="w-4 h-4 mr-2" />
+                  Import Ratings
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Bulk Import Ratings</DialogTitle>
+                </DialogHeader>
+                {businesses && (
+                  <RatingImport
+                    businesses={businesses}
+                    onComplete={() => {
+                      refetchBusinesses();
+                      setRatingImportOpen(false);
                     }}
                   />
                 )}
