@@ -1,10 +1,11 @@
 import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ChevronLeft, Filter } from "lucide-react";
+import { ChevronLeft, Filter, Star } from "lucide-react";
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import SearchBar from "@/components/SearchBar";
 import AdBanner from "@/components/AdBanner";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { getCategoryFromSlug, type Category as CategoryType } from "@/types/business";
 import { useBusinessesByCategory } from "@/hooks/useBusinesses";
@@ -47,12 +48,17 @@ const categoryDescriptions: Record<CategoryType, string> = {
   "Health & Wellbeing": "Therapists, wellness centres, and holistic health services",
 };
 
+type RatingFilter = "all" | "4plus";
+
 const Category = () => {
   const { slug } = useParams<{ slug: string }>();
   const category = getCategoryFromSlug(slug || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
+  const [ratingFilter, setRatingFilter] = useState<RatingFilter>("all");
   const { town, townSlug } = useTown();
+  
+  const { data: allBusinesses = [], isLoading } = useBusinessesByCategory(category || "Café", town.slug);
 
   if (!category) {
     return (
@@ -72,8 +78,6 @@ const Category = () => {
     );
   }
 
-  const { data: allBusinesses = [], isLoading } = useBusinessesByCategory(category, town.slug);
-
   const filteredBusinesses = useMemo(() => {
     let result = [...allBusinesses].sort((a, b) => 
       (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
@@ -81,6 +85,13 @@ const Category = () => {
     
     if (showFeaturedOnly) {
       result = result.filter(b => b.featured);
+    }
+
+    if (ratingFilter === "4plus") {
+      result = result.filter(b => 
+        (b.googleRating && b.googleRating >= 4) || 
+        (b.tripadvisorRating && b.tripadvisorRating >= 4)
+      );
     }
     
     if (!searchQuery.trim()) return result;
@@ -92,12 +103,20 @@ const Category = () => {
         business.description.toLowerCase().includes(query) ||
         business.address.toLowerCase().includes(query)
     );
-  }, [allBusinesses, searchQuery, showFeaturedOnly]);
+  }, [allBusinesses, searchQuery, showFeaturedOnly, ratingFilter]);
 
   const featuredCount = allBusinesses.filter((b) => b.featured).length;
+  const highRatedCount = allBusinesses.filter(b => 
+    (b.googleRating && b.googleRating >= 4) || (b.tripadvisorRating && b.tripadvisorRating >= 4)
+  ).length;
 
   return (
     <Layout>
+      <SEOHead
+        title={`Best ${category} in ${town.name} | Discover Local`}
+        description={`${categoryDescriptions[category]} in ${town.name}. Browse ${allBusinesses.length} local businesses.`}
+        keywords={`${category.toLowerCase()}, ${town.name}, local businesses, ${town.name} ${category.toLowerCase()}`}
+      />
       {/* Hero */}
       <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
         <div className="container text-center">
@@ -121,23 +140,36 @@ const Category = () => {
             {categoryDescriptions[category]}. Browse {allBusinesses.length} local {allBusinesses.length === 1 ? 'business' : 'businesses'} below.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-lg mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
             <SearchBar
               onSearch={setSearchQuery}
               placeholder={`Search ${category.toLowerCase()}...`}
               className="flex-1"
             />
-            {featuredCount > 0 && (
-              <Button
-                variant={showFeaturedOnly ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
-                className="w-fit mx-auto sm:mx-0 hover:scale-105 transition-transform"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Featured Only
-              </Button>
-            )}
+            <div className="flex gap-2 justify-center">
+              {featuredCount > 0 && (
+                <Button
+                  variant={showFeaturedOnly ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
+                  className="hover:scale-105 transition-transform"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Featured
+                </Button>
+              )}
+              {highRatedCount > 0 && (
+                <Button
+                  variant={ratingFilter === "4plus" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setRatingFilter(ratingFilter === "4plus" ? "all" : "4plus")}
+                  className="hover:scale-105 transition-transform"
+                >
+                  <Star className="w-4 h-4 mr-2" />
+                  4+ Stars
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -166,6 +198,7 @@ const Category = () => {
                 Showing {filteredBusinesses.length} {filteredBusinesses.length === 1 ? "business" : "businesses"}
                 {searchQuery && ` for "${searchQuery}"`}
                 {showFeaturedOnly && " (featured only)"}
+                {ratingFilter === "4plus" && " (4+ stars)"}
               </p>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredBusinesses.map((business, index) => (

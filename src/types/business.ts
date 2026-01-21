@@ -26,6 +26,16 @@ export const BUSINESS_TAGS: BusinessTag[] = [
   "Eco-friendly",
 ];
 
+export interface OpeningHours {
+  monday?: string;
+  tuesday?: string;
+  wednesday?: string;
+  thursday?: string;
+  friday?: string;
+  saturday?: string;
+  sunday?: string;
+}
+
 export interface Business {
   id: string;
   slug: string;
@@ -46,6 +56,8 @@ export interface Business {
   tags?: BusinessTag[];
   views?: number;
   createdAt?: string;
+  openingHours?: OpeningHours;
+  verified?: boolean;
 }
 
 export const CATEGORIES: Category[] = [

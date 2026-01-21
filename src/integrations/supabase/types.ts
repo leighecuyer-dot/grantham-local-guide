@@ -28,6 +28,7 @@ export type Database = {
           image: string
           instagram: string | null
           name: string
+          opening_hours: Json | null
           phone: string | null
           slug: string
           tags: Database["public"]["Enums"]["business_tag"][] | null
@@ -35,6 +36,7 @@ export type Database = {
           tripadvisor_rating: number | null
           tripadvisor_url: string | null
           updated_at: string
+          verified: boolean
           views: number
           website: string | null
         }
@@ -51,6 +53,7 @@ export type Database = {
           image: string
           instagram?: string | null
           name: string
+          opening_hours?: Json | null
           phone?: string | null
           slug: string
           tags?: Database["public"]["Enums"]["business_tag"][] | null
@@ -58,6 +61,7 @@ export type Database = {
           tripadvisor_rating?: number | null
           tripadvisor_url?: string | null
           updated_at?: string
+          verified?: boolean
           views?: number
           website?: string | null
         }
@@ -74,6 +78,7 @@ export type Database = {
           image?: string
           instagram?: string | null
           name?: string
+          opening_hours?: Json | null
           phone?: string | null
           slug?: string
           tags?: Database["public"]["Enums"]["business_tag"][] | null
@@ -81,6 +86,7 @@ export type Database = {
           tripadvisor_rating?: number | null
           tripadvisor_url?: string | null
           updated_at?: string
+          verified?: boolean
           views?: number
           website?: string | null
         }

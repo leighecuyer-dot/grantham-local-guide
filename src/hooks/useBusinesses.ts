@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import type { Business, Category, BusinessTag } from "@/types/business";
+import type { Business, Category, BusinessTag, OpeningHours } from "@/types/business";
 
 interface DbBusiness {
   id: string;
@@ -24,6 +24,8 @@ interface DbBusiness {
   views: number;
   created_at: string;
   updated_at: string;
+  opening_hours: OpeningHours | null;
+  verified: boolean;
 }
 
 const mapDbToBusiness = (db: DbBusiness): Business => ({
@@ -46,6 +48,8 @@ const mapDbToBusiness = (db: DbBusiness): Business => ({
   tags: (db.tags as BusinessTag[]) || undefined,
   views: db.views,
   createdAt: db.created_at.split('T')[0],
+  openingHours: db.opening_hours || undefined,
+  verified: db.verified,
 });
 
 export const useBusinesses = (town?: string) => {
@@ -178,6 +182,8 @@ export interface CreateBusinessInput {
   google_rating?: number;
   google_reviews_url?: string;
   tags?: BusinessTag[];
+  opening_hours?: OpeningHours;
+  verified?: boolean;
 }
 
 export const useCreateBusiness = () => {
@@ -206,6 +212,8 @@ export const useCreateBusiness = () => {
             google_rating: business.google_rating || null,
             google_reviews_url: business.google_reviews_url || null,
             tags: business.tags || [],
+            opening_hours: business.opening_hours || null,
+            verified: business.verified || false,
           } as any
         )
         .select()
@@ -245,6 +253,8 @@ export const useUpdateBusiness = () => {
             google_rating: business.google_rating || null,
             google_reviews_url: business.google_reviews_url || null,
             tags: business.tags || [],
+            opening_hours: business.opening_hours || null,
+            verified: business.verified || false,
           } as any
         )
         .eq("id", id)
