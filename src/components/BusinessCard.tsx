@@ -3,6 +3,8 @@ import { MapPin, Star } from "lucide-react";
 import { Business } from "@/types/business";
 import { Badge } from "@/components/ui/badge";
 import { useTown } from "@/contexts/TownContext";
+import FavoriteButton from "@/components/FavoriteButton";
+import VerifiedBadge from "@/components/VerifiedBadge";
 
 interface BusinessCardProps {
   business: Business;
@@ -76,9 +78,11 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
         <img
           src={business.image}
           alt={business.name}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
+        <div className="absolute top-3 right-3 flex items-center gap-2">
+          <FavoriteButton businessId={business.id} />
           {business.featured && (
             <Badge className="bg-primary text-primary-foreground border-0 text-xs">
               <Star className="w-3 h-3 mr-1 fill-current" />
@@ -105,6 +109,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
           <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
             {business.category}
           </span>
+          {business.verified && <VerifiedBadge />}
         </div>
         <div className="flex flex-wrap items-center gap-2 mb-2">
           {business.tripadvisorRating && (
