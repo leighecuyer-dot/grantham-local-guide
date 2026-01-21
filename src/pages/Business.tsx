@@ -3,6 +3,10 @@ import { ChevronLeft, MapPin, Globe, Phone, Instagram, ExternalLink, Star, Loade
 import Layout from "@/components/Layout";
 import BusinessCard from "@/components/BusinessCard";
 import AdBanner from "@/components/AdBanner";
+import SEOHead from "@/components/SEOHead";
+import OpeningHours from "@/components/OpeningHours";
+import VerifiedBadge from "@/components/VerifiedBadge";
+import FavoriteButton from "@/components/FavoriteButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBusinessBySlug, useBusinessesByCategory } from "@/hooks/useBusinesses";
@@ -134,6 +138,12 @@ const Business = () => {
 
   return (
     <Layout>
+      <SEOHead
+        title={`${business.name} | ${business.category} in ${town.name}`}
+        description={business.description.substring(0, 155)}
+        keywords={`${business.name}, ${business.category.toLowerCase()}, ${town.name}, local business`}
+        ogImage={business.image}
+      />
       {/* Hero Image */}
       <div className="relative h-72 md:h-96 lg:h-[28rem] overflow-hidden bg-muted">
         <img
@@ -178,9 +188,13 @@ const Business = () => {
                 ))}
               </div>
 
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-5 leading-tight">
-                {business.name}
-              </h1>
+              <div className="flex items-center gap-3 mb-5">
+                <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground leading-tight">
+                  {business.name}
+                </h1>
+                {business.verified && <VerifiedBadge size="lg" />}
+                <FavoriteButton businessId={business.id} size="lg" />
+              </div>
 
               {(business.tripadvisorRating || business.googleRating) && (
                 <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -203,6 +217,13 @@ const Business = () => {
                   {business.description}
                 </p>
               </div>
+
+              {/* Opening Hours */}
+              {business.openingHours && (
+                <div className="mb-10">
+                  <OpeningHours hours={business.openingHours} />
+                </div>
+              )}
 
               {/* Map */}
               <div className="rounded-2xl overflow-hidden border border-border shadow-sm">
