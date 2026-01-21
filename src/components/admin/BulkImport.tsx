@@ -169,10 +169,52 @@ const isValidEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
+// Blocklist of known directory sites - URLs from these domains should be rejected
+const DIRECTORY_SITE_BLOCKLIST = [
+  "granthamlink.co.uk",
+  "yell.com",
+  "yelp.com",
+  "yelp.co.uk",
+  "192.com",
+  "thebestof.co.uk",
+  "freeindex.co.uk",
+  "hotfrog.co.uk",
+  "cylex-uk.co.uk",
+  "cylex.co.uk",
+  "scoot.co.uk",
+  "thomsonlocal.com",
+  "brownbook.net",
+  "localmole.co.uk",
+  "misterwhat.co.uk",
+  "bizwiki.co.uk",
+  "uksmallbusinessdirectory.co.uk",
+  "businessmagnet.co.uk",
+  "lacartes.com",
+  "opendi.co.uk",
+  "fyple.co.uk",
+  "2findlocal.com",
+  "showmelocal.com",
+];
+
+const isDirectorySiteUrl = (url: string): boolean => {
+  if (!url) return false;
+  try {
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname.toLowerCase().replace(/^www\./, "");
+    return DIRECTORY_SITE_BLOCKLIST.some(
+      (blocked) => hostname === blocked || hostname.endsWith(`.${blocked}`)
+    );
+  } catch {
+    return false;
+  }
+};
+
 const sanitizeUrl = (url: string): string => {
   const trimmed = url?.trim() || "";
   if (!trimmed) return "";
   if (!isValidUrl(trimmed)) return "";
+  // Reject URLs from known directory sites
+  if (isDirectorySiteUrl(trimmed)) return "";
   return truncateString(trimmed, MAX_LENGTHS.url);
 };
 
