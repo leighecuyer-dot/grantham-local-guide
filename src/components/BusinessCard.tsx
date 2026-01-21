@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTown } from "@/contexts/TownContext";
 import FavoriteButton from "@/components/FavoriteButton";
 import VerifiedBadge from "@/components/VerifiedBadge";
+import BlurImage from "@/components/BlurImage";
 
 interface BusinessCardProps {
   business: Business;
@@ -75,11 +76,11 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
       className="group block bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-        <img
+        <BlurImage
           src={business.image}
           alt={business.name}
-          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          containerClassName="w-full h-full"
         />
         <div className="absolute top-3 right-3 flex items-center gap-2">
           <FavoriteButton businessId={business.id} />
