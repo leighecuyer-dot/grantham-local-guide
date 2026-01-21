@@ -16,6 +16,7 @@ import LocalGuides from "./pages/LocalGuides";
 import Advertise from "./pages/Advertise";
 import AITools from "./pages/AITools";
 import Portfolio from "./pages/Portfolio";
+import Favorites from "./pages/Favorites";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -52,6 +53,7 @@ const AnimatedRoutes = () => {
               <Route path="/advertise" element={<Advertise />} />
               <Route path="/ai-tools" element={<AITools />} />
               <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/favorites" element={<Favorites />} />
             </Routes>
           </TownProvider>
         } />

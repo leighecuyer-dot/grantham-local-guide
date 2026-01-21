@@ -58,6 +58,7 @@ export interface Business {
   createdAt?: string;
   openingHours?: OpeningHours;
   verified?: boolean;
+  town?: string;
 }
 
 export const CATEGORIES: Category[] = [
