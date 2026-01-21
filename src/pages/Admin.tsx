@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon, ImageOff, Filter, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, Eye, Upload, RefreshCcw, ImageIcon, ImageOff, Filter, Star, BarChart3 } from "lucide-react";
 import { BulkImport } from "@/components/admin/BulkImport";
 import { ImageScraper } from "@/components/admin/ImageScraper";
 import { RatingImport } from "@/components/admin/RatingImport";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import OpeningHoursInput from "@/components/admin/OpeningHoursInput";
+import AdminAnalytics from "@/components/admin/AdminAnalytics";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,6 +139,8 @@ const BusinessForm = ({
     google_rating: business?.googleRating || undefined,
     google_reviews_url: business?.googleReviewsUrl || "",
     tags: business?.tags || [],
+    opening_hours: business?.openingHours || undefined,
+    verified: business?.verified || false,
   });
 
   const generateSlug = (name: string) => {
@@ -344,14 +348,29 @@ const BusinessForm = ({
         </div>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="featured"
-          checked={formData.featured}
-          onCheckedChange={(checked) => setFormData({ ...formData, featured: !!checked })}
-        />
-        <Label htmlFor="featured">Featured Business</Label>
+      <div className="flex flex-wrap items-center gap-6">
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="featured"
+            checked={formData.featured}
+            onCheckedChange={(checked) => setFormData({ ...formData, featured: !!checked })}
+          />
+          <Label htmlFor="featured">Featured Business</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="verified"
+            checked={formData.verified}
+            onCheckedChange={(checked) => setFormData({ ...formData, verified: !!checked })}
+          />
+          <Label htmlFor="verified">Verified Business</Label>
+        </div>
       </div>
+
+      <OpeningHoursInput
+        value={formData.opening_hours}
+        onChange={(hours) => setFormData({ ...formData, opening_hours: hours })}
+      />
 
       <div>
         <Label>Tags</Label>
@@ -405,6 +424,7 @@ const Admin = () => {
   const [imageScraperOpen, setImageScraperOpen] = useState(false);
   const [ratingImportOpen, setRatingImportOpen] = useState(false);
   const [imageFilter, setImageFilter] = useState<"all" | "missing" | "has">("all");
+  const [showAnalytics, setShowAnalytics] = useState(false);
 
   const isPlaceholderImage = (image: string) => {
     return !image || image.includes("placeholder") || image.includes("unsplash.com");
@@ -524,6 +544,13 @@ const Admin = () => {
                 <span className="ml-2 text-amber-600">({missingImageCount} missing images)</span>
               )}
             </div>
+            <Button
+              variant={showAnalytics ? "default" : "outline"}
+              onClick={() => setShowAnalytics(!showAnalytics)}
+            >
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Analytics
+            </Button>
             <Select value={imageFilter} onValueChange={(v) => setImageFilter(v as "all" | "missing" | "has")}>
               <SelectTrigger className="w-[160px]">
                 <Filter className="w-4 h-4 mr-2" />
@@ -630,6 +657,13 @@ const Admin = () => {
             </Button>
           </div>
         </div>
+
+        {/* Analytics Dashboard */}
+        {showAnalytics && businesses && (
+          <div className="mb-8">
+            <AdminAnalytics businesses={businesses} />
+          </div>
+        )}
 
         {businessesLoading ? (
           <div className="text-center py-12">
