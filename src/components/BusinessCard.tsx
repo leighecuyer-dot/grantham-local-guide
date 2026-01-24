@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, ImageOff } from "lucide-react";
 import { Business } from "@/types/business";
 import { Badge } from "@/components/ui/badge";
 import { useTown } from "@/contexts/TownContext";
 import FavoriteButton from "@/components/FavoriteButton";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import BlurImage from "@/components/BlurImage";
-import { getBusinessImage } from "@/lib/categoryPlaceholders";
+import { getBusinessImage, isPlaceholderImage } from "@/lib/categoryPlaceholders";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface BusinessCardProps {
   business: Business;
@@ -70,6 +71,7 @@ const tagColors: Record<string, string> = {
 
 const BusinessCard = ({ business }: BusinessCardProps) => {
   const { townSlug } = useTown();
+  const usingPlaceholder = isPlaceholderImage(business.image);
 
   return (
     <Link
@@ -83,6 +85,20 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           containerClassName="w-full h-full"
         />
+        {usingPlaceholder && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="absolute top-3 left-3 bg-muted/80 backdrop-blur-sm text-muted-foreground p-1.5 rounded-md">
+                  <ImageOff className="w-3.5 h-3.5" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="text-xs">
+                <p>Stock image - no photo available</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
         <div className="absolute top-3 right-3 flex items-center gap-2">
           <FavoriteButton businessId={business.id} />
           {business.featured && (
