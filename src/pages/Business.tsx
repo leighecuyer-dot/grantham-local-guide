@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useBusinessBySlug, useBusinessesByCategory } from "@/hooks/useBusinesses";
 import { getCategoryIcon, getCategorySlug } from "@/types/business";
 import { useTown } from "@/contexts/TownContext";
+import { getBusinessImage } from "@/lib/categoryPlaceholders";
 const TripAdvisorRating = ({ rating, url }: { rating: number; url?: string }) => {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 >= 0.5;
@@ -147,7 +148,7 @@ const Business = () => {
       {/* Hero Image */}
       <div className="relative h-72 md:h-96 lg:h-[28rem] overflow-hidden bg-muted">
         <img
-          src={business.image}
+          src={getBusinessImage(business.image, business.category)}
           alt={business.name}
           className="w-full h-full object-cover animate-scale-in"
         />
