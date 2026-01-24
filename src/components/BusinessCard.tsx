@@ -6,6 +6,7 @@ import { useTown } from "@/contexts/TownContext";
 import FavoriteButton from "@/components/FavoriteButton";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import BlurImage from "@/components/BlurImage";
+import { getBusinessImage } from "@/lib/categoryPlaceholders";
 
 interface BusinessCardProps {
   business: Business;
@@ -77,7 +78,7 @@ const BusinessCard = ({ business }: BusinessCardProps) => {
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         <BlurImage
-          src={business.image}
+          src={getBusinessImage(business.image, business.category)}
           alt={business.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           containerClassName="w-full h-full"
