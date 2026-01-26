@@ -82,11 +82,8 @@ const Index = () => {
               Spend local.{" "}
               <span className="text-primary">Discover better.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-foreground/90 font-medium mb-3 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <p className="text-xl md:text-2xl text-foreground/90 font-medium mb-8 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
               {town.name}'s independent business guide.
-            </p>
-            <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
-              A curated guide helping people find great local businesses — and helping independents get seen.
             </p>
             
             {/* Search Bar */}
