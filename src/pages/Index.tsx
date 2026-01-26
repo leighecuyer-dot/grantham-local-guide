@@ -78,12 +78,15 @@ const Index = () => {
         
         <div className="container relative z-10 pt-20 pb-24 md:pt-28 md:pb-32">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 leading-[1.1] tracking-tight opacity-0 animate-fade-in-down">
-              Discover the Best of{" "}
-              <span className="text-primary">{town.name}</span>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-[1.1] tracking-tight opacity-0 animate-fade-in-down">
+              Spend local.{" "}
+              <span className="text-primary">Discover better.</span>
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
-              Cafés, bars, salons, shops, trades, gyms and local favourites — all in one place.
+            <p className="text-xl md:text-2xl text-foreground/90 font-medium mb-3 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+              {town.name}'s independent business guide.
+            </p>
+            <p className="text-base md:text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
+              A curated guide helping people find great local businesses — and helping independents get seen.
             </p>
             
             {/* Search Bar */}

@@ -219,6 +219,37 @@ const Business = () => {
                 </p>
               </div>
 
+              {/* Why Locals Love It */}
+              <div className="grid gap-4 sm:grid-cols-3 mb-10">
+                <div className="bg-card rounded-xl border border-border p-5">
+                  <h4 className="font-display font-semibold text-foreground mb-2 flex items-center gap-2">
+                    <Star className="w-4 h-4 text-primary" />
+                    Known for
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Friendly service, quality workmanship, and honest advice.
+                  </p>
+                </div>
+                <div className="bg-card rounded-xl border border-border p-5">
+                  <h4 className="font-display font-semibold text-foreground mb-2 flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary" />
+                    Good for
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Families, quick visits, and repeat customers.
+                  </p>
+                </div>
+                <div className="bg-card rounded-xl border border-border p-5">
+                  <h4 className="font-display font-semibold text-foreground mb-2 flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4 text-primary" />
+                    Why locals recommend
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Reliable, welcoming approach — the kind of place people return to and confidently recommend.
+                  </p>
+                </div>
+              </div>
+
               {/* Opening Hours */}
               {business.openingHours && (
                 <div className="mb-10">
@@ -297,13 +328,21 @@ const Business = () => {
                   )}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-border">
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Is this your business?
-                  </p>
+                <div className="mt-8 pt-6 border-t border-border space-y-3">
                   <Button asChild variant="outline" className="w-full rounded-xl">
-                    <Link to={`/${townSlug}/contact`}>Claim Listing</Link>
+                    <Link to={`/${townSlug}/add-listing`}>Suggest a local business</Link>
                   </Button>
+                  <div className="text-center">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Own this business?
+                    </p>
+                    <Link 
+                      to={`/${townSlug}/contact`}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Claim or update this listing
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
