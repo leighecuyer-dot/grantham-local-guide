@@ -16,12 +16,14 @@ const About = () => {
       {/* Hero */}
       <section className="bg-gradient-to-b from-secondary to-background py-14 md:py-20">
         <div className="container text-center">
-          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 opacity-0 animate-fade-in-down">
-            About Discover Local
+          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 opacity-0 animate-fade-in-down">
+            Spend local. <span className="text-primary">Discover better.</span>
           </h1>
+          <p className="text-xl md:text-2xl text-foreground/90 font-medium mb-4 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            {town.name}'s independent business guide.
+          </p>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-in" style={{ animationDelay: "0.15s" }}>
-            Connecting residents with the best local businesses across the UK 
-            and helping small businesses thrive in their communities.
+            A curated guide helping people find great local businesses — and helping independents get seen.
           </p>
         </div>
       </section>
@@ -34,18 +36,17 @@ const About = () => {
               Our Mission
             </h2>
             <div className="space-y-4 text-foreground/80">
-              <p>
-                Discover Local was created with a simple goal: to make it easy for 
-                residents to discover and support the amazing local businesses in their town.
+              <p className="text-lg font-medium text-foreground">
+                This guide exists to support independent businesses in {town.name}.
               </p>
               <p>
-                From independent cafés to skilled tradespeople, from beauty salons to 
-                kids' activities, every town has so much to offer. We believe that when 
-                we support local businesses, we strengthen our entire community.
+                Every listing is chosen for quality, reputation, or local recommendation — not paid placement.
               </p>
               <p>
-                Our directory is free for businesses to join, because we believe every 
-                local business deserves visibility, regardless of their marketing budget.
+                The aim is simple: help people spend locally and help great businesses get discovered.
+              </p>
+              <p className="text-sm text-muted-foreground italic mt-6">
+                New local guide — growing weekly.
               </p>
             </div>
           </div>
